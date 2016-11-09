@@ -1,0 +1,24 @@
+//
+//  TSTrickerPrefixHeader.pch
+//  Tricker
+//
+//  Created by Mac on 06.11.16.
+//  Copyright © 2016 Mac. All rights reserved.
+//
+
+#ifndef TSTrickerPrefixHeader_pch
+#define TSTrickerPrefixHeader_pch
+
+#define IS_IPHONE_4 (fabs((double)[[UIScreen mainScreen]bounds].size.height - (double)480) < DBL_EPSILON)
+#define IS_IPHONE_5 (fabs((double)[[UIScreen mainScreen]bounds].size.height - (double)568) < DBL_EPSILON)
+#define IS_IPHONE_6 (fabs((double)[[UIScreen mainScreen]bounds].size.height - (double)667) < DBL_EPSILON)
+#define IS_IPHONE_6_PLUS (fabs((double)[[UIScreen mainScreen]bounds].size.height - (double)736) < DBL_EPSILON)
+
+#define APP_ID_VK @"5713737"
+
+#define RGB(r,g,b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue: b/255.0 alpha:1.0]
+#define YELLOW_COLOR RGB(252, 228, 184)
+#define DARK_GRAY_COLOR RGB(147, 172, 190)
+#define LIGHT_GRAY_COLOR RGB(190, 208, 218)
+
+#endif /* TSTrickerPrefixHeader_pch */
