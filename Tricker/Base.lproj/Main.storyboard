@@ -809,9 +809,9 @@
                                                         <constraint firstAttribute="height" constant="22" id="lHz-yN-4w3"/>
                                                         <constraint firstAttribute="width" secondItem="Bw9-0b-BCI" secondAttribute="height" multiplier="1:1" id="oAY-ws-10E"/>
                                                     </constraints>
-                                                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="tintColor" red="0.74509803921568629" green="0.81568627450980391" blue="0.85490196078431369" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" backgroundImage="no_click">
-                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="actionUserBoyButton:" destination="7QL-WY-qFX" eventType="touchUpInside" id="N4H-wr-80s"/>
@@ -824,9 +824,9 @@
                                                         <constraint firstAttribute="width" constant="22" id="WGe-hg-pJy"/>
                                                         <constraint firstAttribute="width" secondItem="raF-Q2-1nA" secondAttribute="height" multiplier="1:1" id="fAb-lC-9P8"/>
                                                     </constraints>
-                                                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <color key="tintColor" red="0.74509803921568629" green="0.81568627450980391" blue="0.85490196078431369" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" backgroundImage="no_click">
-                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="actionUserGirlButton:" destination="7QL-WY-qFX" eventType="touchUpInside" id="Tpc-GK-xUy"/>
@@ -937,7 +937,7 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Gc-HB-wHa">
                                                     <color key="backgroundColor" red="0.51372549020000002" green="0.61960784310000006" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="39" id="WrG-40-FiH"/>
+                                                        <constraint firstAttribute="height" constant="39" id="R8i-TE-8gI"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                                     <state key="normal" title="Сохранить">
@@ -954,10 +954,10 @@
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="9Gc-HB-wHa" firstAttribute="leading" secondItem="z21-v4-fn5" secondAttribute="leading" constant="22" id="8Mw-N6-xrK"/>
-                                                <constraint firstAttribute="trailing" secondItem="9Gc-HB-wHa" secondAttribute="trailing" constant="23" id="K9I-wI-fng"/>
-                                                <constraint firstAttribute="bottom" secondItem="9Gc-HB-wHa" secondAttribute="bottom" constant="12" id="g7Y-zX-Iad"/>
-                                                <constraint firstItem="9Gc-HB-wHa" firstAttribute="top" secondItem="z21-v4-fn5" secondAttribute="top" constant="13" id="muj-9o-iKc"/>
+                                                <constraint firstItem="9Gc-HB-wHa" firstAttribute="leading" secondItem="z21-v4-fn5" secondAttribute="leading" constant="22" id="CFd-Nf-xUL"/>
+                                                <constraint firstItem="9Gc-HB-wHa" firstAttribute="top" secondItem="z21-v4-fn5" secondAttribute="top" constant="13" id="MDI-44-eVl"/>
+                                                <constraint firstAttribute="trailing" secondItem="9Gc-HB-wHa" secondAttribute="trailing" constant="23" id="NGD-ak-qu4"/>
+                                                <constraint firstAttribute="bottom" secondItem="9Gc-HB-wHa" secondAttribute="bottom" constant="12" id="Obw-qq-cDo"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -974,8 +974,10 @@
                     <connections>
                         <outlet property="avatarImageView" destination="KM0-Wg-eBa" id="TLf-Cc-scY"/>
                         <outlet property="backgroundImageView" destination="0k3-17-wT5" id="mvG-RB-Efd"/>
+                        <outlet property="dateBirdthDayLabel" destination="eVx-Lb-V6X" id="0u1-Yn-3F4"/>
                         <outlet property="manButton" destination="Bw9-0b-BCI" id="k35-KA-Q9p"/>
-                        <outlet property="name" destination="BTE-rU-buE" id="NyI-el-APk"/>
+                        <outlet property="nameLabel" destination="BTE-rU-buE" id="tYq-0g-klc"/>
+                        <outlet property="textFieldName" destination="i7d-HK-xDG" id="Nn1-a1-uQw"/>
                         <outlet property="valueYAvatarConstraint" destination="8O9-xn-JqK" id="Vpu-gQ-66H"/>
                         <outlet property="womanButton" destination="raF-Q2-1nA" id="uaT-oZ-Jrx"/>
                     </connections>
@@ -1002,7 +1004,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b1E-HC-Vuu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1028" y="1666"/>
+            <point key="canvasLocation" x="1028" y="1665.5172413793105"/>
         </scene>
         <!--Tab Bar View Controller-->
         <scene sceneID="THg-Sa-hN5">

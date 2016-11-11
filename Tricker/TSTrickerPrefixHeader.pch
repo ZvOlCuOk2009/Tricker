@@ -18,6 +18,7 @@
 
 #define RGB(r,g,b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue: b/255.0 alpha:1.0]
 #define YELLOW_COLOR RGB(252, 228, 184)
+#define LIGHT_YELLOW_COLOR RGB(254, 250, 240)
 #define DARK_GRAY_COLOR RGB(147, 172, 190)
 #define LIGHT_GRAY_COLOR RGB(190, 208, 218)
 

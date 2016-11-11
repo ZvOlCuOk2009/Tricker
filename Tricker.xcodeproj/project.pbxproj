@@ -22,6 +22,7 @@
 		FD1C4F731DCE9F4400CF63E9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FD1C4F721DCE9F4400CF63E9 /* GoogleService-Info.plist */; };
 		FD1C4F761DCEA49700CF63E9 /* TSFireUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1C4F751DCEA49700CF63E9 /* TSFireUser.m */; };
 		FD5CD4941DD3D6CF0056C1A6 /* TSSitysViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD5CD4931DD3D6CF0056C1A6 /* TSSitysViewController.m */; };
+		FDEF72631DD65CAB00CAF773 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEF72621DD65CAA00CAF773 /* CoreLocation.framework */; };
 		FDF7FF8E1DCFE6AE00846997 /* libVK-ios-sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF7FF8D1DCFE6AE00846997 /* libVK-ios-sdk.a */; };
 		FDF963991DD10890000877B5 /* TSRegistrationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF963981DD10890000877B5 /* TSRegistrationViewController.m */; };
 		FDF9639C1DD14598000877B5 /* TSPhotoAndNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF9639B1DD14598000877B5 /* TSPhotoAndNameViewController.m */; };
@@ -77,6 +78,7 @@
 		FD1C4F751DCEA49700CF63E9 /* TSFireUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSFireUser.m; sourceTree = "<group>"; };
 		FD5CD4921DD3D6CF0056C1A6 /* TSSitysViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSSitysViewController.h; sourceTree = "<group>"; };
 		FD5CD4931DD3D6CF0056C1A6 /* TSSitysViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSSitysViewController.m; sourceTree = "<group>"; };
+		FDEF72621DD65CAA00CAF773 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		FDF7FE891DCF56EA00846997 /* TSTrickerPrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TSTrickerPrefixHeader.pch; sourceTree = "<group>"; };
 		FDF7FE8A1DCFBB4B00846997 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		FDF7FF8D1DCFE6AE00846997 /* libVK-ios-sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libVK-ios-sdk.a"; path = "../../../Library/Developer/Xcode/DerivedData/Tricker-geyfrjksvtsjmcanpyukuhryfnnq/Build/Products/Debug-iphoneos/VK-ios-sdk/libVK-ios-sdk.a"; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDEF72631DD65CAB00CAF773 /* CoreLocation.framework in Frameworks */,
 				FDF7FF8E1DCFE6AE00846997 /* libVK-ios-sdk.a in Frameworks */,
 				2C27B593A68DE82F875D0227 /* libPods-Tricker.a in Frameworks */,
 			);
@@ -121,6 +124,7 @@
 		59452B679435EF299964D07D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FDEF72621DD65CAA00CAF773 /* CoreLocation.framework */,
 				FDF7FF8D1DCFE6AE00846997 /* libVK-ios-sdk.a */,
 				28CCB341251CEF3778160ABF /* libPods-Tricker.a */,
 			);
@@ -170,8 +174,7 @@
 				FDF9639D1DD145B0000877B5 /* Registration controllers */,
 				FD1C4F641DCE280400CF63E9 /* TSTabBarViewController.h */,
 				FD1C4F651DCE280400CF63E9 /* TSTabBarViewController.m */,
-				FD1C4F6A1DCE64F000CF63E9 /* TSProfileUserViewController.h */,
-				FD1C4F6B1DCE64F000CF63E9 /* TSProfileUserViewController.m */,
+				FDEFBCBB1DD4B62500C31204 /* remuve controller */,
 				FDFDFC961DD293E0007811EF /* TSProfileTableViewController.h */,
 				FDFDFC971DD293E0007811EF /* TSProfileTableViewController.m */,
 				FD5CD4921DD3D6CF0056C1A6 /* TSSitysViewController.h */,
@@ -213,6 +216,15 @@
 				FD1C4F581DCE252300CF63E9 /* Info.plist */,
 			);
 			path = TrickerUITests;
+			sourceTree = "<group>";
+		};
+		FDEFBCBB1DD4B62500C31204 /* remuve controller */ = {
+			isa = PBXGroup;
+			children = (
+				FD1C4F6A1DCE64F000CF63E9 /* TSProfileUserViewController.h */,
+				FD1C4F6B1DCE64F000CF63E9 /* TSProfileUserViewController.m */,
+			);
+			name = "remuve controller";
 			sourceTree = "<group>";
 		};
 		FDF9639D1DD145B0000877B5 /* Registration controllers */ = {

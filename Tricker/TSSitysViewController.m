@@ -9,7 +9,13 @@
 #import "TSSitysViewController.h"
 #import "TSTrickerPrefixHeader.pch"
 
-@interface TSSitysViewController ()
+#import <CoreLocation/CoreLocation.h>
+
+#define YANDEX_MAPS_API_DOMAIN @"http://geocode-maps.yandex.ru/1.x/"
+
+@interface TSSitysViewController () <CLLocationManagerDelegate>
+
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 @end
 
@@ -18,24 +24,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-//    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] init];
-//    [leftItem setImage:[UIImage imageNamed:@"back"]];
-//    [leftItem setTintColor:DARK_GRAY_COLOR];
-//    self.navigationItem.leftBarButtonItem = leftItem;
-//    [leftItem setTarget:self];
-//    [leftItem setAction:@selector(cancelInteraction)];
+    self.navigationController.navigationBar.topItem.title = @"";
+    
+//    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:[UIImage imageNamed:@"back"]
+//                                                      forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+
+    UITextField *textField = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, self.navigationController.navigationBar.frame.size.width, 21.0)];
+    textField.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.titleView = textField;
+    
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 
-}
-
-
-- (void)cancelInteraction:(id)sender
-{
-//    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0] animated:YES];
-//    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 
