@@ -1,0 +1,538 @@
+//
+//  TSProfileTableViewController.m
+//  Tricker
+//
+//  Created by Mac on 09.11.16.
+//  Copyright © 2016 Mac. All rights reserved.
+//
+
+#import "TSProfileTableViewController.h"
+#import "TSSocialNetworkLoginViewController.h"
+#import "TSFacebookManager.h"
+#import "TSFireUser.h"
+#import "TSTrickerPrefixHeader.pch"
+
+#import "TSTabBarViewController.h"
+
+#import <SVProgressHUD.h>
+
+@import Firebase;
+@import FirebaseAuth;
+@import FirebaseDatabase;
+
+@interface TSProfileTableViewController ()
+
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *dateBirdthDayLabel;
+@property (weak, nonatomic) IBOutlet UILabel *cityLabel;
+
+@property (strong, nonatomic) NSDateFormatter *dateFormatter;
+
+@property (strong, nonatomic) UIDatePicker *myDatePicker;
+@property (strong, nonatomic) NSString *selectData;
+@property (strong, nonatomic) UIBarButtonItem *doneButton;
+
+@property (strong, nonatomic) FIRDatabaseReference *ref;
+@property (strong, nonatomic) TSFireUser *fireUser;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *valueYAvatarConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *valueWidthAvatarConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *valueHieghtAvatarConstraint;
+
+@property (weak, nonatomic) IBOutlet UITextField *textFieldName;
+
+@property (weak, nonatomic) IBOutlet UIButton *manButton;
+@property (weak, nonatomic) IBOutlet UIButton *womanButton;
+
+@property (strong, nonatomic) UIImage *pointImage;
+@property (strong, nonatomic) UIImage *circleImage;
+
+@property (strong, nonatomic) NSString *positionButtonGender;
+
+@property (assign, nonatomic) NSInteger heightHeader;
+@property (assign, nonatomic) CGFloat fixSide;
+@property (assign, nonatomic) CGFloat fixOffset;
+@property (assign, nonatomic) CGFloat fixCornerRadius;
+
+@end
+
+@implementation TSProfileTableViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.ref = [[FIRDatabase database] reference];
+    [self configureController];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    if (self.selectCity) {
+        self.cityLabel.text = self.selectCity;
+    }
+    
+}
+
+#pragma mark - configure the controller
+
+
+- (void)configureController
+{
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
+    self.tableView.backgroundView = imageView;
+
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        if (IS_IPHONE_4) {
+            self.heightHeader = kHeightHeader_4_5;
+            self.valueWidthAvatarConstraint.constant = kAvatarSide_4_5;
+            self.valueHieghtAvatarConstraint.constant = kAvatarSide_4_5;
+            self.avatarImageView.layer.cornerRadius = kAvatarSide_4_5 / 2;
+            self.fixSide = kAvatarSide_4_5;
+            self.fixOffset = kAvatarOffset_4_5;
+            self.fixCornerRadius = kAvatarCornerRadius_4_5;
+        } else if (IS_IPHONE_5) {
+            self.heightHeader = kHeightHeader_4_5;
+            self.valueWidthAvatarConstraint.constant = kAvatarSide_4_5;
+            self.valueHieghtAvatarConstraint.constant = kAvatarSide_4_5;
+            self.avatarImageView.layer.cornerRadius = kAvatarSide_4_5 / 2;
+            self.fixSide = kAvatarSide_4_5;
+            self.fixOffset = kAvatarOffset_4_5;
+            self.fixCornerRadius = kAvatarCornerRadius_4_5;
+        } else if (IS_IPHONE_6) {
+            self.heightHeader = kHeightHeader_6;
+            self.valueWidthAvatarConstraint.constant = kAvatarSide_6;
+            self.valueHieghtAvatarConstraint.constant = kAvatarSide_6;
+            self.avatarImageView.layer.cornerRadius = kAvatarSide_6 / 2;
+            self.fixSide = kAvatarSide_6;
+            self.fixOffset = kAvatarOffset_6;
+            self.fixCornerRadius = kAvatarCornerRadius_6;
+        } else if (IS_IPHONE_6_PLUS) {
+            self.heightHeader = kHeightHeader_6_S;
+            self.valueWidthAvatarConstraint.constant = kAvatarSide_6_S;
+            self.valueHieghtAvatarConstraint.constant = kAvatarSide_6_S;
+            self.avatarImageView.layer.cornerRadius = kAvatarSide_6_S / 2;
+            self.fixSide = kAvatarSide_6_S;
+            self.fixOffset = kAvatarOffset_6_S;
+            self.fixCornerRadius = kAvatarCornerRadius_6_S;
+        }
+    }
+    
+    
+    self.avatarImageView.clipsToBounds = YES;
+    
+    [self.tableView setSeparatorColor:DARK_GRAY_COLOR];
+    
+    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        [SVProgressHUD show];
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+        [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
+        [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            self.fireUser = [TSFireUser initWithSnapshot:snapshot];
+            
+            NSURL *urlPhoto = [NSURL URLWithString:self.fireUser.photoURL];
+            
+            UIImage *imagePhoto = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlPhoto]];
+            
+            
+            if (urlPhoto && urlPhoto.scheme && urlPhoto.host) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    self.avatarImageView.image = imagePhoto;
+                    self.backgroundImageView.image = imagePhoto;
+                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.dateOfBirth location:self.fireUser.location];
+                    
+                    [SVProgressHUD dismiss];
+                });
+                
+            } else {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                    UIImage *convertImage = [UIImage imageWithData:data];
+                    self.avatarImageView.image = convertImage;
+                    self.backgroundImageView.image = convertImage;
+                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.dateOfBirth location:self.fireUser.location];
+                    
+                    [SVProgressHUD dismiss];
+                });
+                
+            }
+            
+        });
+        
+    }];
+
+    
+    self.pointImage = [UIImage imageNamed:@"click"];
+    self.circleImage = [UIImage imageNamed:@"no_click"];
+
+    
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setDateFormat:@"dd.MM.yyyy"];
+    self.doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Готово" style:UIBarButtonItemStylePlain
+                                                      target:self action:@selector(doneAction:)];
+    
+    [self.doneButton setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                        [UIFont fontWithName:@"System-light" size:20.0], NSFontAttributeName,
+                                        [UIColor blackColor], NSForegroundColorAttributeName,
+                                        nil] forState:UIControlStateNormal];
+    
+    self.navigationController.navigationBar.tintColor = DARK_GRAY_COLOR;
+
+    
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
+    [self.userDefaults setObject:self.fireUser.displayName forKey:@"displayName"];
+    
+}
+
+
+- (void)setParametrUser:(NSString *)displayName gender:(NSString *)gender
+        dateOfBirth:(NSString *)dateOfBirth location:(NSString *)location
+{
+    
+    
+    if ([gender isEqualToString:@"man"]) {
+        [self.manButton setImage:self.pointImage forState:UIControlStateNormal];
+        [self.womanButton setImage:self.circleImage forState:UIControlStateNormal];
+    } else if ([gender isEqualToString:@"woman"]) {
+        [self.manButton setImage:self.circleImage forState:UIControlStateNormal];
+        [self.womanButton setImage:self.pointImage forState:UIControlStateNormal];
+    }
+
+    
+    NSInteger age;
+    
+    
+    if (dateOfBirth) {
+        self.dateBirdthDayLabel.text = dateOfBirth;
+        
+        NSDate *currentData = [NSDate date];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"dd-MM-yyyy"];
+        
+        NSDate *convertDateOfBirth = [dateFormatter dateFromString:dateOfBirth];
+        
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        
+        NSUInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond;
+        NSDateComponents *components = [calendar components:unitFlags fromDate:convertDateOfBirth
+                                                     toDate:currentData options:0];
+        
+        age = [components year];
+
+    }
+    
+    
+    if (age != 0) {
+        self.nameLabel.text = [NSString stringWithFormat:@"%@, %ld", displayName, (long)age];
+        self.textFieldName.placeholder = [NSString stringWithFormat:@"%@, %ld", displayName, (long)age];
+    } else {
+        self.nameLabel.text = displayName;
+        self.textFieldName.placeholder = displayName;
+    }
+    
+    
+    if (location) {
+        self.cityLabel.text = location;
+    }
+    
+}
+
+
+#pragma mark - Actions
+
+
+- (IBAction)actionUserBoyButton:(UIButton *)sender
+{
+    
+    self.positionButtonGender = @"woman";
+    
+    if ([self.positionButtonGender isEqualToString:@"man"]) {
+        [sender setImage:self.circleImage forState:UIControlStateNormal];
+        [self.womanButton setImage:self.pointImage forState:UIControlStateNormal];
+        self.positionButtonGender = @"woman";
+    } else {
+        [sender setImage:self.pointImage forState:UIControlStateNormal];
+        [self.womanButton setImage:self.circleImage forState:UIControlStateNormal];
+        self.positionButtonGender = @"man";
+    }
+    
+}
+
+
+- (IBAction)actionUserGirlButton:(UIButton *)sender
+{
+   
+    self.positionButtonGender = @"man";
+    
+    if ([self.positionButtonGender isEqualToString:@"woman"]) {
+        [sender setImage:self.circleImage forState:UIControlStateNormal];
+        [self.manButton setImage:self.pointImage forState:UIControlStateNormal];
+        self.positionButtonGender = @"man";
+    } else {
+        [sender setImage:self.pointImage forState:UIControlStateNormal];
+        [self.manButton setImage:self.circleImage forState:UIControlStateNormal];
+        self.positionButtonGender = @"woman";
+    }
+    
+}
+
+
+- (IBAction)saveUserAtionButton:(id)sender
+{
+ 
+    
+    __block NSString *userID = nil;
+    __block NSString *name = nil;
+    __block NSString *photoURL = nil;
+    __block NSString *email = nil;
+    
+    NSString *gender = nil;
+    NSString *dateOfBirth = nil;
+    NSString *location = nil;
+
+    
+    userID = self.fireUser.uid;
+    name = self.fireUser.displayName;
+    photoURL = self.fireUser.photoURL;
+    email = self.fireUser.email;
+        
+    
+    
+    if ([self.textFieldName.text length] > 0) {
+        name = self.textFieldName.text;
+    } else {
+        name = self.fireUser.displayName;
+    }
+    
+    if (self.positionButtonGender) {
+        gender = self.positionButtonGender;
+    } else {
+        gender = self.fireUser.gender;
+    }
+    
+    
+    if (self.selectData) {
+        dateOfBirth = self.selectData;
+    } else {
+        dateOfBirth = self.fireUser.dateOfBirth;
+    }
+    
+    
+    if (self.selectCity) {
+        location = self.selectCity;
+    } else {
+        location = self.fireUser.location;
+    }
+    
+
+    [SVProgressHUD show];
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+    [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
+    [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSDictionary *userData = @{@"userID":userID,
+                                   @"displayName":name,
+                                   @"photoURL":photoURL,
+                                   @"email":email,
+                                   @"gender":gender,
+                                   @"dateOfBirth":dateOfBirth,
+                                   @"location":location};
+        
+        [[[[[self.ref child:@"dataBase"] child:@"users"] child:userID] child:@"userData"] setValue:userData];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [SVProgressHUD dismiss];
+            
+            [self configureController];
+            
+            self.textFieldName.text = @"";
+        });
+        
+    });
+    
+}
+
+
+
+#pragma mark - UITableViewDelegate
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    if (indexPath.row == 0)
+    {
+        return self.heightHeader;
+    }
+
+    
+    if (indexPath.row == 7)
+    {
+        return kHeightCellButtonSaveAndOut;
+    }
+    
+    return kHeightCell;
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    
+    if (indexPath.row == 5)
+    {
+
+        NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ru_UA"];
+        
+        self.myDatePicker = [[UIDatePicker alloc] init];
+        [self.myDatePicker setValue:DARK_GRAY_COLOR forKey:@"textColor"];
+        self.myDatePicker.backgroundColor = LIGHT_YELLOW_COLOR;
+        self.myDatePicker.locale = locale;
+        self.myDatePicker.datePickerMode = UIDatePickerModeDate;
+        [self.myDatePicker addTarget:self action:@selector(dateChanged:) forControlEvents:UIControlEventValueChanged];
+        
+        if (self.myDatePicker.superview == nil)
+        {
+            [self.view.window addSubview: self.myDatePicker];
+            self.view.window.backgroundColor = [UIColor whiteColor];
+            
+            CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+            CGSize pickerSize = [self.myDatePicker sizeThatFits:CGSizeZero];
+            CGRect startRect = CGRectMake(0.0,
+                                          screenRect.origin.y + screenRect.size.height,
+                                          pickerSize.width, pickerSize.height);
+            self.myDatePicker.frame = startRect;
+            
+            CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height - 49,
+                                           self.view.frame.size.width, self.myDatePicker.frame.size.height);
+
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:0.3];
+            
+            [UIView setAnimationDelegate:self];
+            
+            self.myDatePicker.frame = pickerRect;
+            
+            CGRect newFrame = self.tableView.frame;
+            newFrame.size.height -= self.myDatePicker.frame.size.height;
+            self.tableView.frame = newFrame;
+            [UIView commitAnimations];
+          
+            [self.navigationItem setRightBarButtonItem:self.doneButton animated:YES];
+        }
+    }
+}
+
+
+- (void)dateChanged:(UIDatePicker *)sender
+{
+    self.selectData = [self.dateFormatter stringFromDate:[sender date]];
+    self.dateBirdthDayLabel.text = self.selectData;
+    NSLog(@"Data %@", self.selectData);
+}
+
+
+- (void)doneAction:(id)sender
+{
+    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+    CGRect endFrame = self.myDatePicker.frame;
+    endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.3];
+    
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(slideDownDidStop)];
+    
+    self.myDatePicker.frame = endFrame;
+    [UIView commitAnimations];
+    
+    CGRect newFrame = self.tableView.frame;
+    newFrame.size.height += self.myDatePicker.frame.size.height;
+    self.tableView.frame = newFrame;
+   
+    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
+    [self.navigationItem setRightBarButtonItems:nil animated:YES];
+    
+}
+
+
+- (void)slideDownDidStop
+{
+    [self.myDatePicker removeFromSuperview];
+}
+
+
+#pragma mark - UITextFieldDelegate
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
+#pragma mark - change avatar frame when scrolling
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+
+    CGRect scrollBounds = scrollView.bounds;
+    scrollView.bounds = scrollBounds;
+    
+    CGFloat changeHeight = scrollBounds.origin.y + kHeightNavBar;
+    CGFloat changeSide = self.fixSide - changeHeight;
+    CGFloat changeDiameter = changeSide / 2;
+    CGFloat correctionValue = (self.fixSide / 2) - changeDiameter;
+    
+    CGFloat offsetSizeWidth = self.fixOffset + correctionValue;
+    CGFloat offsetSizeHeight = self.fixOffset + ((correctionValue * 2) - (changeHeight / 3));
+    CGRect changeFrame = CGRectMake(offsetSizeWidth, offsetSizeHeight, changeSide, changeSide);
+    
+    self.avatarImageView.layer.cornerRadius = self.fixCornerRadius;
+    self.avatarImageView.clipsToBounds = YES;
+    
+    self.avatarImageView.frame = changeFrame;
+    self.avatarImageView.layer.cornerRadius = changeDiameter;
+    self.avatarImageView.hidden = NO;
+    
+    if (changeDiameter >= self.fixCornerRadius) {
+        self.avatarImageView.frame = CGRectMake(self.fixOffset, self.fixOffset, self.fixSide, self.fixSide);
+        self.avatarImageView.layer.cornerRadius = self.fixCornerRadius;
+    } else if (changeDiameter <= 0) {
+        self.avatarImageView.hidden = YES;
+    }
+    
+}
+
+
+@end
