@@ -72,13 +72,14 @@
 @property (strong, nonatomic) NSArray *dataSourseAlcohole;
 
 @property (strong, nonatomic) NSMutableDictionary *characteristicsUser;
+@property (strong, nonatomic) NSArray *allKeaysParameters;
 
 @property (assign, nonatomic) NSInteger selectedRowInComponent;
 @property (assign, nonatomic) NSInteger tagSelectCell;
 
 @property (assign, nonatomic) BOOL statePickerView;
-@property (assign, nonatomic) BOOL positionButtonBoy;
-@property (assign, nonatomic) BOOL positionButtonGirl;
+@property (assign, nonatomic) BOOL stateButtonBoy;
+@property (assign, nonatomic) BOOL stateButtonGirl;
 
 @end
 
@@ -124,7 +125,7 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     self.avatarImageView.image = imagePhoto;
-                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.dateOfBirth location:self.fireUser.location];
+                    [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
                     
                     [SVProgressHUD dismiss];
                 });
@@ -136,7 +137,7 @@
                     NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
                     UIImage *convertImage = [UIImage imageWithData:data];
                     self.avatarImageView.image = convertImage;
-                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.dateOfBirth location:self.fireUser.location];
+                    [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
                     
                     [SVProgressHUD dismiss];
                 });
@@ -149,7 +150,6 @@
         });
         
     }];
-    
     
     self.doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Готово" style:UIBarButtonItemStylePlain
                                                       target:self action:@selector(doneAction:)];
@@ -196,12 +196,18 @@
     
     
     self.checked = [UIImage imageNamed:@"checked"];
-    self.checkbox = [UIImage imageNamed:@"check_box"];
+    self.checkbox = [UIImage imageNamed:@"check-box-empty"];
 }
 
 
-- (void)setParametrUser:(NSString *)displayName gender:(NSString *)gender
-            dateOfBirth:(NSString *)dateOfBirth location:(NSString *)location
+- (void)viewWillAppear:(BOOL)animated
+{
+   
+    
+}
+
+
+- (void)setParametrUser:(NSString *)displayName dateOfBirth:(NSString *)dateOfBirth parameters:(NSDictionary *)parameters
 {
     
     NSInteger age;
@@ -218,7 +224,7 @@
         
         NSCalendar *calendar = [NSCalendar currentCalendar];
         
-        NSUInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond;
+        NSUInteger unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute |NSCalendarUnitSecond;
         NSDateComponents *components = [calendar components:unitFlags fromDate:convertDateOfBirth
                                                      toDate:currentData options:0];
         
@@ -229,6 +235,46 @@
     self.nameLabel.text = displayName;
     self.ageLabel.text = [NSString stringWithFormat:@"%ld", (long)age];
     
+    
+    if (parameters) {
+        
+        self.allKeaysParameters = [parameters allKeys];
+        
+        for (NSString *key in self.allKeaysParameters) {
+            for (UILabel *label in self.labels) {
+                NSString *tag = [NSString stringWithFormat:@"%ld", (long)label.tag];
+                if ([key isEqualToString:tag]) {
+                    label.text = [parameters objectForKey:key];
+                }
+            }
+            
+            if ([key isEqualToString:@"1"]) {
+                NSString *ageRange = [parameters objectForKey:key];
+                NSArray *components = [ageRange componentsSeparatedByString:@" "];
+                if ([components count] > 1) {
+                    self.minAgeUnknownPeopleLabel.text = [components objectAtIndex:0];
+                    self.maxAgeUnknownPeopleLabel.text = [components objectAtIndex:1];
+                }
+            }
+            
+            if ([key isEqualToString:@"16"]) {
+                NSString *searchGender = [parameters objectForKey:key];
+                NSArray *components = [searchGender componentsSeparatedByString:@" "];
+                if ([components count] > 1) {
+                    
+                    [self.manButton setImage:self.checked forState:UIControlStateNormal];
+                    [self.womanButton setImage:self.checked forState:UIControlStateNormal];
+                    
+                } else {
+                    
+                    if ([[components objectAtIndex:0] isEqualToString:@"man"]) {
+                        [self.manButton setImage:self.checked forState:UIControlStateNormal];
+                    } else if ([[components objectAtIndex:0] isEqualToString:@"woman"])
+                    [self.womanButton setImage:self.checked forState:UIControlStateNormal];
+                }
+            }
+        }
+    }
 }
 
 
@@ -238,12 +284,13 @@
 - (IBAction)actionBoyButton:(id)sender
 {
     
-    if (self.positionButtonBoy == NO) {
+    if (self.stateButtonBoy == NO) {
         [sender setImage:self.checked forState:UIControlStateNormal];
-        self.positionButtonBoy = YES;
+        self.stateButtonBoy = YES;
     } else {
         [sender setImage:self.checkbox forState:UIControlStateNormal];
-        self.positionButtonBoy = NO;
+        self.stateButtonBoy = NO;
+        [self.characteristicsUser removeObjectForKey:@"16"];
     }
     
 }
@@ -252,12 +299,13 @@
 - (IBAction)actionGirlButton:(id)sender
 {
     
-    if (self.positionButtonGirl == NO) {
+    if (self.stateButtonGirl == NO) {
         [sender setImage:self.checked forState:UIControlStateNormal];
-        self.positionButtonGirl = YES;
+        self.stateButtonGirl = YES;
     } else {
         [sender setImage:self.checkbox forState:UIControlStateNormal];
-        self.positionButtonGirl = NO;
+        self.stateButtonGirl = NO;
+        [self.characteristicsUser removeObjectForKey:@"16"];
     }
     
 }
@@ -436,14 +484,12 @@
             if (label.tag == self.tagSelectCell && ![selectPosition isEqualToString:@"Отменить"]) {
                 label.text = selectPosition;
                 
-                NSString *key = [NSString stringWithFormat:@"key%ld", (long)self.tagSelectCell];
+                NSString *key = [NSString stringWithFormat:@"%ld", (long)self.tagSelectCell];
                 [self.characteristicsUser setObject:selectPosition forKey:key];
                 
             }
             
         }
-        
-        NSLog(@"selectLaunguage %@", selectPosition);
         
     } else if (self.selectedRowInComponent == 2) {
         
@@ -457,14 +503,24 @@
         self.minAgeUnknownPeopleLabel.text = minAge;
         self.maxAgeUnknownPeopleLabel.text = maxAge;
         
-        NSString *key = @"key1";
+        NSString *key = @"1";
         
         [self.characteristicsUser setObject:selectAge forKey:key];
         
-        NSLog(@"selectAge %@", selectAge);
     }
     
-    NSLog(@"Charasteric %@", self.characteristicsUser.description);
+//    NSInteger tag = self.pickerView.tag;
+//    NSString *valuePickerView = [self pickerView:self.pickerView
+//                                           titleForRow:[self.pickerView selectedRowInComponent:0] forComponent:0];
+//    
+//    for (NSString *key in self.allKeaysParameters) {
+//        
+//        NSString *keyTag = [NSString stringWithFormat:@"%ld", (long)tag];
+//        if (![valuePickerView isEqualToString:@"Отменить"]) {
+//            [self.characteristicsUser setObject:valuePickerView forKey:keyTag];
+//        }
+//    }
+    
 }
 
 
@@ -613,6 +669,32 @@
 - (IBAction)logOutAtionButton:(id)sender
 {
     
+    NSMutableString *searchForGender = nil;
+    
+    if (self.stateButtonBoy == YES) {
+        searchForGender = [NSMutableString stringWithString:@"man"];
+        [self.characteristicsUser setObject:searchForGender forKey:@"key16"];
+    }
+    
+    if (self.stateButtonGirl == YES) {
+        if (!searchForGender) {
+            searchForGender = [NSMutableString stringWithString:@"woman"];
+        } else {
+            [searchForGender appendString:@" woman"];
+        }
+        
+        [self.characteristicsUser setObject:searchForGender forKey:@"key16"];
+    }
+    
+
+    
+    [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid]
+      child:@"parameters"] setValue:self.characteristicsUser];
+
+    
+    
+    /*
+    
     NSError *error;
     [[FIRAuth auth] signOut:&error];
     if (!error) {
@@ -625,6 +707,7 @@
     
     TSSocialNetworkLoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"TSSocialNetworkLoginViewController"];
     [self presentViewController:controller animated:YES completion:nil];
+     */
     
 }
 

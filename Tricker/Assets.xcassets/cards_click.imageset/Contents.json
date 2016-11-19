@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "poker-playing-cards.png",
+      "filename" : "Cards Filled.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "poker-playing-cards 2.png",
+      "filename" : "Cards Filled 2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "poker-playing-cards 3.png",
+      "filename" : "Cards Filled 3.png",
       "scale" : "3x"
     }
   ],

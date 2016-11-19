@@ -31,28 +31,20 @@
     UITabBarItem *tabBarItem5 = [self.tabBar.items objectAtIndex:4];
     
     
-    tabBarItem1.selectedImage = [[UIImage imageNamed:@"user_click"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-    tabBarItem1.image = [[UIImage imageNamed:@"user_no"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
+    tabBarItem1.selectedImage = [[UIImage imageNamed:@"user_click"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    tabBarItem1.image = [[UIImage imageNamed:@"user_no"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
-    tabBarItem2.selectedImage = [[UIImage imageNamed:@"map_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-    tabBarItem2.image = [[UIImage imageNamed:@"map_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
+    tabBarItem2.selectedImage = [[UIImage imageNamed:@"map_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    tabBarItem2.image = [[UIImage imageNamed:@"map_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
-    tabBarItem3.selectedImage = [[UIImage imageNamed:@"cards_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-    tabBarItem3.image = [[UIImage imageNamed:@"cards_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
+    tabBarItem3.selectedImage = [[UIImage imageNamed:@"cards_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    tabBarItem3.image = [[UIImage imageNamed:@"cards_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
-    tabBarItem4.selectedImage = [[UIImage imageNamed:@"chat_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-    tabBarItem4.image = [[UIImage imageNamed:@"chat_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
+    tabBarItem4.selectedImage = [[UIImage imageNamed:@"chat_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    tabBarItem4.image = [[UIImage imageNamed:@"chat_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
-    tabBarItem5.selectedImage = [[UIImage imageNamed:@"settings_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-    tabBarItem5.image = [[UIImage imageNamed:@"settings_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-
-    
-//    tabBarItem1.imageInsets = UIEdgeInsetsMake(5, 0, 5, 2);
-//    tabBarItem2.imageInsets = UIEdgeInsetsMake(5, 0, - 5, 2);
-//    tabBarItem3.imageInsets = UIEdgeInsetsMake(7, 0, 7, 2);
-//    tabBarItem4.imageInsets = UIEdgeInsetsMake(7, 0, - 7, 2);
-//    tabBarItem5.imageInsets = UIEdgeInsetsMake(7, 0, - 7, 2);
-    
+    tabBarItem5.selectedImage = [[UIImage imageNamed:@"settings_click"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    tabBarItem5.image = [[UIImage imageNamed:@"settings_no"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
 
 }
 
