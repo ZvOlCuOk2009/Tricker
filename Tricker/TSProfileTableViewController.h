@@ -7,10 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TSFireUser.h"
+
+@import Firebase;
+@import FirebaseAuth;
+@import FirebaseDatabase;
 
 @interface TSProfileTableViewController : UITableViewController
 
 @property (strong, nonatomic) NSString *selectCity;
 @property (strong, nonatomic) NSUserDefaults *userDefaults;
+@property (strong, nonatomic) UIBarButtonItem *doneButton;
+@property (strong, nonatomic) FIRDatabaseReference *ref;
+@property (strong, nonatomic) TSFireUser *fireUser;
+
+- (void)doneAction:(id)sender;
 
 @end

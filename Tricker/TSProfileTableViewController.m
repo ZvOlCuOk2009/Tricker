@@ -9,16 +9,11 @@
 #import "TSProfileTableViewController.h"
 #import "TSSocialNetworkLoginViewController.h"
 #import "TSFacebookManager.h"
-#import "TSFireUser.h"
 #import "TSTrickerPrefixHeader.pch"
 
 #import "TSTabBarViewController.h"
 
 #import <SVProgressHUD.h>
-
-@import Firebase;
-@import FirebaseAuth;
-@import FirebaseDatabase;
 
 @interface TSProfileTableViewController ()
 
@@ -30,12 +25,8 @@
 
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 
-@property (strong, nonatomic) UIDatePicker *myDatePicker;
+@property (strong, nonatomic) UIDatePicker *datePicker;
 @property (strong, nonatomic) NSString *selectData;
-@property (strong, nonatomic) UIBarButtonItem *doneButton;
-
-@property (strong, nonatomic) FIRDatabaseReference *ref;
-@property (strong, nonatomic) TSFireUser *fireUser;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *valueYAvatarConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *valueWidthAvatarConstraint;
@@ -51,6 +42,7 @@
 
 @property (strong, nonatomic) NSString *positionButtonGender;
 
+@property (assign, nonatomic) BOOL stateDatePicker;
 @property (assign, nonatomic) NSInteger heightHeader;
 @property (assign, nonatomic) CGFloat fixSide;
 @property (assign, nonatomic) CGFloat fixOffset;
@@ -187,6 +179,7 @@
     
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setDateFormat:@"dd.MM.yyyy"];
+    
     self.doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Готово" style:UIBarButtonItemStylePlain
                                                       target:self action:@selector(doneAction:)];
     
@@ -200,6 +193,8 @@
     
     self.userDefaults = [NSUserDefaults standardUserDefaults];
     [self.userDefaults setObject:self.fireUser.displayName forKey:@"displayName"];
+    
+    self.stateDatePicker = NO;
     
 }
 
@@ -404,47 +399,50 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     
-    if (indexPath.row == 5)
+    if (indexPath.row == 5 && self.stateDatePicker == NO)
     {
 
         NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ru_UA"];
         
-        self.myDatePicker = [[UIDatePicker alloc] init];
-        [self.myDatePicker setValue:DARK_GRAY_COLOR forKey:@"textColor"];
-        self.myDatePicker.backgroundColor = LIGHT_YELLOW_COLOR;
-        self.myDatePicker.locale = locale;
-        self.myDatePicker.datePickerMode = UIDatePickerModeDate;
-        [self.myDatePicker addTarget:self action:@selector(dateChanged:) forControlEvents:UIControlEventValueChanged];
+        self.datePicker = [[UIDatePicker alloc] init];
+        [self.datePicker setValue:DARK_GRAY_COLOR forKey:@"textColor"];
+        self.datePicker.backgroundColor = LIGHT_YELLOW_COLOR;
+        self.datePicker.locale = locale;
+        self.datePicker.datePickerMode = UIDatePickerModeDate;
+        [self.datePicker addTarget:self action:@selector(dateChanged:) forControlEvents:UIControlEventValueChanged];
         
-        if (self.myDatePicker.superview == nil)
+        if (self.datePicker.superview == nil)
         {
-            [self.view.window addSubview: self.myDatePicker];
+            [self.view.window addSubview: self.datePicker];
             self.view.window.backgroundColor = [UIColor whiteColor];
             
             CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
-            CGSize pickerSize = [self.myDatePicker sizeThatFits:CGSizeZero];
+            CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];
             CGRect startRect = CGRectMake(0.0,
                                           screenRect.origin.y + screenRect.size.height,
                                           pickerSize.width, pickerSize.height);
-            self.myDatePicker.frame = startRect;
+            self.datePicker.frame = startRect;
             
             CGRect pickerRect = CGRectMake(0.0, screenRect.origin.y + screenRect.size.height - pickerSize.height - 49,
-                                           self.view.frame.size.width, self.myDatePicker.frame.size.height);
+                                           self.view.frame.size.width, self.datePicker.frame.size.height);
 
             [UIView beginAnimations:nil context:NULL];
             [UIView setAnimationDuration:0.3];
             
             [UIView setAnimationDelegate:self];
             
-            self.myDatePicker.frame = pickerRect;
+            self.datePicker.frame = pickerRect;
             
             CGRect newFrame = self.tableView.frame;
-            newFrame.size.height -= self.myDatePicker.frame.size.height;
+            newFrame.size.height -= self.datePicker.frame.size.height;
             self.tableView.frame = newFrame;
             [UIView commitAnimations];
           
             [self.navigationItem setRightBarButtonItem:self.doneButton animated:YES];
+            
         }
+        
+        self.stateDatePicker = YES;
     }
 }
 
@@ -460,7 +458,7 @@
 - (void)doneAction:(id)sender
 {
     CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
-    CGRect endFrame = self.myDatePicker.frame;
+    CGRect endFrame = self.datePicker.frame;
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     
     [UIView beginAnimations:nil context:NULL];
@@ -469,11 +467,11 @@
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(slideDownDidStop)];
     
-    self.myDatePicker.frame = endFrame;
+    self.datePicker.frame = endFrame;
     [UIView commitAnimations];
     
     CGRect newFrame = self.tableView.frame;
-    newFrame.size.height += self.myDatePicker.frame.size.height;
+    newFrame.size.height += self.datePicker.frame.size.height;
     self.tableView.frame = newFrame;
    
     NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
@@ -481,12 +479,13 @@
 
     [self.navigationItem setRightBarButtonItems:nil animated:YES];
     
+    self.stateDatePicker = NO;
 }
 
 
 - (void)slideDownDidStop
 {
-    [self.myDatePicker removeFromSuperview];
+    [self.datePicker removeFromSuperview];
 }
 
 

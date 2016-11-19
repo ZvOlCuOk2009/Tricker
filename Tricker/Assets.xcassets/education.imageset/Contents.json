@@ -2,12 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "repairing-service 3.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "repairing-service 2.png",
+      "filename" : "mortarboard.png",
       "scale" : "2x"
     },
     {

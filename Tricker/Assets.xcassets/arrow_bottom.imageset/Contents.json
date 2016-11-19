@@ -2,16 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "repairing-service 3.png",
+      "filename" : "Копия next.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "repairing-service 2.png",
+      "filename" : "Копия next 2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "Копия next 3.png",
       "scale" : "3x"
     }
   ],
