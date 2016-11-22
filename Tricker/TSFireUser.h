@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSString *dateOfBirth;
 @property (strong, nonatomic) NSString *location;
 @property (strong, nonatomic) NSString *gender;
-@property (strong, nonatomic) NSDictionary *parameters;
+@property (strong, nonatomic) NSMutableDictionary *parameters;
 
 + (TSFireUser *)initWithSnapshot:(FIRDataSnapshot *)snapshot;
 

@@ -72,7 +72,9 @@
 @property (strong, nonatomic) NSArray *dataSourseAlcohole;
 
 @property (strong, nonatomic) NSMutableDictionary *characteristicsUser;
-@property (strong, nonatomic) NSArray *allKeaysParameters;
+@property (strong, nonatomic) NSArray *allKeysParameters;
+@property (strong, nonatomic) NSString *selectPosition;
+@property (strong, nonatomic) NSString *curentGender;
 
 @property (assign, nonatomic) NSInteger selectedRowInComponent;
 @property (assign, nonatomic) NSInteger tagSelectCell;
@@ -104,6 +106,7 @@
     
     [self.tableView setSeparatorColor:DARK_GRAY_COLOR];
     
+    //получение модели пользователя из базы
     [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
     
         [SVProgressHUD show];
@@ -119,7 +122,7 @@
             
             UIImage *imagePhoto = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlPhoto]];
             
-            
+            //проверка является ли изображение url или оно кодировано
             if (urlPhoto && urlPhoto.scheme && urlPhoto.host) {
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -156,6 +159,7 @@
     
     self.statePickerView = NO;
     
+    //создание массивов с источниками данных для UIPickerView
     self.dataSourseAge = [NSMutableArray array];
     self.dataSourseGrowth = [NSMutableArray array];
     self.dataSourseWeight = [NSMutableArray array];
@@ -185,34 +189,39 @@
     self.dataSourseRelations = @[@"Свободен", @"Занят", @"Ничего серьйозного", @"Отменить"];
     self.dataSourseChilds = @[@"Есть", @"Есть хочу ещё", @"Нет, когда нибудь", @"Нет и не хочу", @"Отменить"];
     self.dataSourseEarnings = @[@"Обеспечен", @"Средний", @"Не большой стабильный", @"Отменить"];
-    self.dataSourseEducation = @[@"Несколько высших", @"Высшее",@"Не полное высшеее", @"Среднее - техническое",@"Студент", @"Отменить"];
+    self.dataSourseEducation = @[@"Несколько высших", @"Высшее",@"Не полное высшее", @"Среднее - техническое",@"Студент", @"Отменить"];
     self.dataSourseHousing = @[@"Свой дом", @"Своя квартира", @"Снимаю квартиру", @"Снимаю комнату", @"Живу с родителями", @"Отменить"];
     self.dataSourseAutomobile = @[@"Есть", @"Нет", @"Отменить"];
     self.dataSourseSmoking = @[@"Курю каждый день", @"Курю редко", @"Не курю", @"Не курю и не терплю курящих", @"Отменить"];
     self.dataSourseAlcohole = @[ @"Иногда выпиваю в компании", @"Не употребляю", @"Всегда готов!", @"Отменить"];
 
     
+    //создание массива лейблов
     self.labels = @[self.minAgeUnknownPeopleLabel, self.maxAgeUnknownPeopleLabel, self.growthLabel, self.weightLabel, self.targetLabel, self.figureLabel, self.eyesLabel, self.hairLabel, self.relationsLabel, self.childsLabel, self.earningsLabel, self.educationLabel, self.housingLabel, self.automobileLabel, self.smokingLabel, self.alcoholeLabel];
     
     
     self.checked = [UIImage imageNamed:@"checked"];
     self.checkbox = [UIImage imageNamed:@"check-box-empty"];
+    
 }
 
 
 - (void)viewWillAppear:(BOOL)animated
 {
-   
     
 }
 
 
-- (void)setParametrUser:(NSString *)displayName dateOfBirth:(NSString *)dateOfBirth parameters:(NSDictionary *)parameters
+- (void)setParametrUser:(NSString *)displayName dateOfBirth:(NSString *)dateOfBirth parameters:(NSMutableDictionary *)parameters
 {
+    //очистка всех лейблов перед загрузкой новых данных
+    for (UILabel *label in self.self.labels) {
+        label.text = @"";
+    }
     
     NSInteger age;
     
-    
+    //вычисление возраста
     if (dateOfBirth) {
         
         NSDate *currentData = [NSDate date];
@@ -235,12 +244,31 @@
     self.nameLabel.text = displayName;
     self.ageLabel.text = [NSString stringWithFormat:@"%ld", (long)age];
     
-    
+    //установка параметров из базы если уже есть данные
     if (parameters) {
         
-        self.allKeaysParameters = [parameters allKeys];
+        //////проблема!!!
         
-        for (NSString *key in self.allKeaysParameters) {
+        /*
+        NSInteger counter = 0;
+        
+        for (id __strong object in parameters) {
+            if ([object isKindOfClass:[NSNull class]]) {
+                NSString *key = [NSString stringWithFormat:@"%ld", (long)counter];
+                [parameters removeObjectForKey:key];
+            } else {
+                
+            }
+            ++counter;
+        }
+        */
+        
+        NSLog(@"ПОЛУЧАЮ %@", parameters.description);
+        
+
+        self.allKeysParameters = [parameters allKeys];
+        
+        for (NSString *key in self.allKeysParameters) {
             for (UILabel *label in self.labels) {
                 NSString *tag = [NSString stringWithFormat:@"%ld", (long)label.tag];
                 if ([key isEqualToString:tag]) {
@@ -248,16 +276,9 @@
                 }
             }
             
-            if ([key isEqualToString:@"1"]) {
-                NSString *ageRange = [parameters objectForKey:key];
-                NSArray *components = [ageRange componentsSeparatedByString:@" "];
-                if ([components count] > 1) {
-                    self.minAgeUnknownPeopleLabel.text = [components objectAtIndex:0];
-                    self.maxAgeUnknownPeopleLabel.text = [components objectAtIndex:1];
-                }
-            }
+            //установка изображения кнопок если выбранна позиция
             
-            if ([key isEqualToString:@"16"]) {
+            if ([key isEqualToString:@"1"]) {
                 NSString *searchGender = [parameters objectForKey:key];
                 NSArray *components = [searchGender componentsSeparatedByString:@" "];
                 if ([components count] > 1) {
@@ -270,9 +291,20 @@
                     if ([[components objectAtIndex:0] isEqualToString:@"man"]) {
                         [self.manButton setImage:self.checked forState:UIControlStateNormal];
                     } else if ([[components objectAtIndex:0] isEqualToString:@"woman"])
-                    [self.womanButton setImage:self.checked forState:UIControlStateNormal];
+                        [self.womanButton setImage:self.checked forState:UIControlStateNormal];
                 }
             }
+            //установка даты для поиска пользователей
+            
+            if ([key isEqualToString:@"2"]) {
+                NSString *ageRange = [parameters objectForKey:key];
+                NSArray *components = [ageRange componentsSeparatedByString:@" "];
+                if ([components count] > 1) {
+                    self.minAgeUnknownPeopleLabel.text = [components objectAtIndex:0];
+                    self.maxAgeUnknownPeopleLabel.text = [components objectAtIndex:1];
+                }
+            }
+            
         }
     }
 }
@@ -290,7 +322,7 @@
     } else {
         [sender setImage:self.checkbox forState:UIControlStateNormal];
         self.stateButtonBoy = NO;
-        [self.characteristicsUser removeObjectForKey:@"16"];
+        [self.characteristicsUser removeObjectForKey:@"1"];
     }
     
 }
@@ -305,9 +337,9 @@
     } else {
         [sender setImage:self.checkbox forState:UIControlStateNormal];
         self.stateButtonGirl = NO;
-        [self.characteristicsUser removeObjectForKey:@"16"];
+        [self.characteristicsUser removeObjectForKey:@"1"];
     }
-    
+
 }
 
 
@@ -343,59 +375,59 @@
         [self createdUipickerView:1];
     } else if (indexPath.row == 4 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 2;
+        self.tagSelectCell = 3;
         [self createdUipickerView:2];
     } else if (indexPath.row == 6 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 3;
+        self.tagSelectCell = 4;
         [self createdUipickerView:3];
     } else if (indexPath.row == 7 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 4;
+        self.tagSelectCell = 5;
         [self createdUipickerView:4];
     } else if (indexPath.row == 8 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 5;
+        self.tagSelectCell = 6;
         [self createdUipickerView:5];
     } else if (indexPath.row == 9 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 6;
+        self.tagSelectCell = 7;
         [self createdUipickerView:6];
     } else if (indexPath.row == 10 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 7;
+        self.tagSelectCell = 8;
         [self createdUipickerView:7];
     } else if (indexPath.row == 12 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 8;
+        self.tagSelectCell = 9;
         [self createdUipickerView:8];
     } else if (indexPath.row == 13 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 9;
+        self.tagSelectCell = 10;
         [self createdUipickerView:9];
     } else if (indexPath.row == 14 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 10;
+        self.tagSelectCell = 11;
         [self createdUipickerView:10];
     } else if (indexPath.row == 15 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 11;
+        self.tagSelectCell = 12;
         [self createdUipickerView:11];
     } else if (indexPath.row == 16 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 12;
+        self.tagSelectCell = 13;
         [self createdUipickerView:12];
     } else if (indexPath.row == 17 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 13;
+        self.tagSelectCell = 14;
         [self createdUipickerView:13];
     } else if (indexPath.row == 18 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 14;
+        self.tagSelectCell = 15;
         [self createdUipickerView:14];
     } else if (indexPath.row == 19 && self.statePickerView == NO) {
         self.selectedRowInComponent = 1;
-        self.tagSelectCell = 15;
+        self.tagSelectCell = 16;
         [self createdUipickerView:15];
     }
     
@@ -404,7 +436,7 @@
 
 - (void)createdUipickerView:(NSInteger)tag
 {
-    
+    //созданеи UIPickerView
     self.pickerView = [[UIPickerView alloc] init];
     [self.pickerView setValue:DARK_GRAY_COLOR forKey:@"textColor"];
     self.pickerView.backgroundColor = LIGHT_YELLOW_COLOR;
@@ -416,6 +448,8 @@
     {
         [self.view.window addSubview:self.pickerView];
         self.view.window.backgroundColor = [UIColor whiteColor];
+        
+        //изменение фрейма экрана и всплыте UIPickerView
         
         CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
         CGSize pickerSize = [self.pickerView sizeThatFits:CGSizeZero];
@@ -450,6 +484,7 @@
 - (void)doneAction:(UIBarButtonItem *)doneButton
 {
     
+    //скрытие UIPickerView
     CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
     CGRect endFrame = self.pickerView.frame;
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
@@ -474,18 +509,21 @@
 
     self.statePickerView = NO;
     
+    //добавление параметров в словарь для последующего сохранения в базу
+    //определение количества компонентов в UIPickerView
+    
     if (self.selectedRowInComponent == 1) {
         
-        NSString *selectPosition = [self pickerView:self.pickerView
+        self.selectPosition = [self pickerView:self.pickerView
                                          titleForRow:[self.pickerView selectedRowInComponent:0] forComponent:0];
         
         for (UILabel *label in self.labels) {
             
-            if (label.tag == self.tagSelectCell && ![selectPosition isEqualToString:@"Отменить"]) {
-                label.text = selectPosition;
+            if (label.tag == self.tagSelectCell && ![self.selectPosition isEqualToString:@"Отменить"]) {
+                label.text = self.selectPosition;
                 
                 NSString *key = [NSString stringWithFormat:@"%ld", (long)self.tagSelectCell];
-                [self.characteristicsUser setObject:selectPosition forKey:key];
+                [self.characteristicsUser setObject:self.selectPosition forKey:key];
                 
             }
             
@@ -503,30 +541,34 @@
         self.minAgeUnknownPeopleLabel.text = minAge;
         self.maxAgeUnknownPeopleLabel.text = maxAge;
         
-        NSString *key = @"1";
+        NSString *key = @"2";
         
         [self.characteristicsUser setObject:selectAge forKey:key];
         
     }
-    
-//    NSInteger tag = self.pickerView.tag;
-//    NSString *valuePickerView = [self pickerView:self.pickerView
-//                                           titleForRow:[self.pickerView selectedRowInComponent:0] forComponent:0];
-//    
-//    for (NSString *key in self.allKeaysParameters) {
-//        
-//        NSString *keyTag = [NSString stringWithFormat:@"%ld", (long)tag];
-//        if (![valuePickerView isEqualToString:@"Отменить"]) {
-//            [self.characteristicsUser setObject:valuePickerView forKey:keyTag];
-//        }
-//    }
-    
+
+    //обновление словаря с данными
+    if (self.fireUser.parameters) {
+        
+        NSMutableDictionary *updateCharacteristicsUser = (NSMutableDictionary *)self.fireUser.parameters;
+        NSString *key = [NSString stringWithFormat:@"%ld", (long)self.tagSelectCell];
+        
+        if (![self.selectPosition isEqualToString:@"Отменить"]) {
+            [updateCharacteristicsUser setValue:self.selectPosition forKey:key];
+            self.characteristicsUser = [NSMutableDictionary dictionaryWithDictionary:updateCharacteristicsUser];
+            
+        } else {
+            [updateCharacteristicsUser removeObjectForKey:key];
+            self.characteristicsUser = [NSMutableDictionary dictionaryWithDictionary:updateCharacteristicsUser];
+
+        }
+    }
 }
 
 
 - (void)slideDownDidStop
 {
-    
+    //удаление UIPickerView
     [self.pickerView removeFromSuperview];
 }
 
@@ -669,29 +711,33 @@
 - (IBAction)logOutAtionButton:(id)sender
 {
     
-    NSMutableString *searchForGender = nil;
+//    //добавление параметра поиска пола
+//    NSMutableString *searchForGender = nil;
+//    
+//    if (self.stateButtonBoy == YES) {
+//        searchForGender = [NSMutableString stringWithString:@"man"];
+//        [self.characteristicsUser setObject:searchForGender forKey:@"1"];
+//    }
+//    
+//    if (self.stateButtonGirl == YES) {
+//        if (!searchForGender) {
+//            searchForGender = [NSMutableString stringWithString:@"woman"];
+//        } else {
+//            [searchForGender appendString:@" woman"];
+//        }
+//        
+//        [self.characteristicsUser setObject:searchForGender forKey:@"1"];
+//    }
     
-    if (self.stateButtonBoy == YES) {
-        searchForGender = [NSMutableString stringWithString:@"man"];
-        [self.characteristicsUser setObject:searchForGender forKey:@"key16"];
-    }
-    
-    if (self.stateButtonGirl == YES) {
-        if (!searchForGender) {
-            searchForGender = [NSMutableString stringWithString:@"woman"];
-        } else {
-            [searchForGender appendString:@" woman"];
-        }
-        
-        [self.characteristicsUser setObject:searchForGender forKey:@"key16"];
-    }
-    
-
     
     [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid]
       child:@"parameters"] setValue:self.characteristicsUser];
 
+    NSLog(@"ЛОЖУ %@", self.characteristicsUser.description);
     
+    
+    //перезагрузка контроллера в момент сохранения новых данных
+    [self configureController];
     
     /*
     

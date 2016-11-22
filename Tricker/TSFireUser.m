@@ -45,7 +45,7 @@
         user.dateOfBirth = (NSString *)dateOfBirth;
         user.location = (NSString *)location;
         user.gender = (NSString *)gender;
-        user.parameters = (NSDictionary *)parameters;
+        user.parameters = (NSMutableDictionary *)parameters;
         
     }
     

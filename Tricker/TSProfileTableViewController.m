@@ -339,6 +339,18 @@
         location = self.fireUser.location;
     }
     
+    if (!gender) {
+        gender = @"";
+    }
+    
+    if (!dateOfBirth) {
+        dateOfBirth = @"";
+    }
+    
+    if (!location) {
+        location = @"";
+    }
+    
 
     [SVProgressHUD show];
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
