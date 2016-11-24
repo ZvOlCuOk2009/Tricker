@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TSProfileTableViewController.h"
 
 @interface TSSettingsTableViewController : UITableViewController
 

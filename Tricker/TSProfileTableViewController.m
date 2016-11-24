@@ -428,7 +428,7 @@
             [self.view.window addSubview: self.datePicker];
             self.view.window.backgroundColor = [UIColor whiteColor];
             
-            CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+            CGRect screenRect = [[UIScreen mainScreen] bounds];
             CGSize pickerSize = [self.datePicker sizeThatFits:CGSizeZero];
             CGRect startRect = CGRectMake(0.0,
                                           screenRect.origin.y + screenRect.size.height,
@@ -469,7 +469,7 @@
 
 - (void)doneAction:(id)sender
 {
-    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect endFrame = self.datePicker.frame;
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     

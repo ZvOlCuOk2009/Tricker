@@ -76,6 +76,8 @@
 @property (strong, nonatomic) NSString *selectPosition;
 @property (strong, nonatomic) NSString *curentGender;
 
+@property (strong, nonatomic) NSUserDefaults *userDefaults;
+
 @property (assign, nonatomic) NSInteger selectedRowInComponent;
 @property (assign, nonatomic) NSInteger tagSelectCell;
 
@@ -90,8 +92,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
+    self.tableView.backgroundView = imageView;
+    
+    [self.tableView setSeparatorColor:DARK_GRAY_COLOR];
+    
     self.ref = [[FIRDatabase database] reference];
-    [self configureController];
+    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        self.fireUser = [TSFireUser initWithSnapshot:snapshot];
+        [self configureController];
+        [self setDataUser];
+    }];
+    
 }
 
 
@@ -100,59 +113,9 @@
 
 - (void)configureController
 {
+
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
-    self.tableView.backgroundView = imageView;
-    
-    [self.tableView setSeparatorColor:DARK_GRAY_COLOR];
-    
-    //получение модели пользователя из базы
-    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-    
-        [SVProgressHUD show];
-        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
-        [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
-        [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            self.fireUser = [TSFireUser initWithSnapshot:snapshot];
-            
-            NSURL *urlPhoto = [NSURL URLWithString:self.fireUser.photoURL];
-            
-            UIImage *imagePhoto = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlPhoto]];
-            
-            //проверка является ли изображение url или оно кодировано
-            if (urlPhoto && urlPhoto.scheme && urlPhoto.host) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    self.avatarImageView.image = imagePhoto;
-                    [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
-                    
-                    [SVProgressHUD dismiss];
-                });
-                
-            } else {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                    UIImage *convertImage = [UIImage imageWithData:data];
-                    self.avatarImageView.image = convertImage;
-                    [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
-                    
-                    [SVProgressHUD dismiss];
-                });
-                
-            }
-            
-            self.avatarImageView.layer.cornerRadius = 40;
-            self.avatarImageView.clipsToBounds = YES;
-            
-        });
-        
-    }];
+    [self setDataUser];
     
     self.doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Готово" style:UIBarButtonItemStylePlain
                                                       target:self action:@selector(doneAction:)];
@@ -195,10 +158,12 @@
     self.dataSourseSmoking = @[@"Курю каждый день", @"Курю редко", @"Не курю", @"Не курю и не терплю курящих", @"Отменить"];
     self.dataSourseAlcohole = @[ @"Иногда выпиваю в компании", @"Не употребляю", @"Всегда готов!", @"Отменить"];
 
+    self.navigationController.navigationBar.tintColor = DARK_GRAY_COLOR;
     
     //создание массива лейблов
     self.labels = @[self.minAgeUnknownPeopleLabel, self.maxAgeUnknownPeopleLabel, self.growthLabel, self.weightLabel, self.targetLabel, self.figureLabel, self.eyesLabel, self.hairLabel, self.relationsLabel, self.childsLabel, self.earningsLabel, self.educationLabel, self.housingLabel, self.automobileLabel, self.smokingLabel, self.alcoholeLabel];
     
+    self.userDefaults = [NSUserDefaults standardUserDefaults];
     
     self.checked = [UIImage imageNamed:@"checked"];
     self.checkbox = [UIImage imageNamed:@"check-box-empty"];
@@ -206,8 +171,52 @@
 }
 
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)setDataUser
 {
+    
+    //получение модели пользователя из базы
+    
+    [SVProgressHUD show];
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+    [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
+    [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        
+        NSURL *urlPhoto = [NSURL URLWithString:self.fireUser.photoURL];
+        
+        UIImage *imagePhoto = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlPhoto]];
+        
+        //проверка является ли изображение url или оно кодировано
+        if (urlPhoto && urlPhoto.scheme && urlPhoto.host) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                self.avatarImageView.image = imagePhoto;
+                [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
+                
+                [SVProgressHUD dismiss];
+            });
+            
+        } else {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                UIImage *convertImage = [UIImage imageWithData:data];
+                self.avatarImageView.image = convertImage;
+                [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
+                
+                [SVProgressHUD dismiss];
+            });
+            
+        }
+        
+        self.avatarImageView.layer.cornerRadius = 40;
+        self.avatarImageView.clipsToBounds = YES;
+        
+    });
     
 }
 
@@ -233,7 +242,7 @@
         
         NSCalendar *calendar = [NSCalendar currentCalendar];
         
-        NSUInteger unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute |NSCalendarUnitSecond;
+        NSUInteger unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
         NSDateComponents *components = [calendar components:unitFlags fromDate:convertDateOfBirth
                                                      toDate:currentData options:0];
         
@@ -247,38 +256,28 @@
     //установка параметров из базы если уже есть данные
     if (parameters) {
         
-        //////проблема!!!
-        
-        /*
-        NSInteger counter = 0;
-        
-        for (id __strong object in parameters) {
-            if ([object isKindOfClass:[NSNull class]]) {
-                NSString *key = [NSString stringWithFormat:@"%ld", (long)counter];
-                [parameters removeObjectForKey:key];
-            } else {
-                
-            }
-            ++counter;
-        }
-        */
-        
-        NSLog(@"ПОЛУЧАЮ %@", parameters.description);
-        
 
         self.allKeysParameters = [parameters allKeys];
         
         for (NSString *key in self.allKeysParameters) {
             for (UILabel *label in self.labels) {
                 NSString *tag = [NSString stringWithFormat:@"%ld", (long)label.tag];
-                if ([key isEqualToString:tag]) {
+                NSString *shortKey = [key substringFromIndex:3];
+                if ([shortKey isEqualToString:tag]) {
                     label.text = [parameters objectForKey:key];
                 }
             }
             
             //установка изображения кнопок если выбранна позиция
             
-            if ([key isEqualToString:@"1"]) {
+            NSString *shortKey = [key substringFromIndex:3];
+            
+            if ([shortKey isEqualToString:@"4"]) {
+                
+            }
+            
+            
+            if ([shortKey isEqualToString:@"1"]) {
                 NSString *searchGender = [parameters objectForKey:key];
                 NSArray *components = [searchGender componentsSeparatedByString:@" "];
                 if ([components count] > 1) {
@@ -296,7 +295,7 @@
             }
             //установка даты для поиска пользователей
             
-            if ([key isEqualToString:@"2"]) {
+            if ([shortKey isEqualToString:@"2"]) {
                 NSString *ageRange = [parameters objectForKey:key];
                 NSArray *components = [ageRange componentsSeparatedByString:@" "];
                 if ([components count] > 1) {
@@ -304,7 +303,6 @@
                     self.maxAgeUnknownPeopleLabel.text = [components objectAtIndex:1];
                 }
             }
-            
         }
     }
 }
@@ -322,7 +320,7 @@
     } else {
         [sender setImage:self.checkbox forState:UIControlStateNormal];
         self.stateButtonBoy = NO;
-        [self.characteristicsUser removeObjectForKey:@"1"];
+        [self.characteristicsUser removeObjectForKey:@"key1"];
     }
     
 }
@@ -337,7 +335,7 @@
     } else {
         [sender setImage:self.checkbox forState:UIControlStateNormal];
         self.stateButtonGirl = NO;
-        [self.characteristicsUser removeObjectForKey:@"1"];
+        [self.characteristicsUser removeObjectForKey:@"key1"];
     }
 
 }
@@ -451,7 +449,7 @@
         
         //изменение фрейма экрана и всплыте UIPickerView
         
-        CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+        CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGSize pickerSize = [self.pickerView sizeThatFits:CGSizeZero];
         CGRect startRect = CGRectMake(0.0,
                                       screenRect.origin.y + screenRect.size.height,
@@ -485,7 +483,7 @@
 {
     
     //скрытие UIPickerView
-    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect endFrame = self.pickerView.frame;
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;
     
@@ -509,27 +507,36 @@
 
     self.statePickerView = NO;
     
+    if (self.fireUser.parameters) {
+        self.characteristicsUser = self.fireUser.parameters;
+    } else {
+        self.characteristicsUser = [NSMutableDictionary dictionary];
+    }
+    
     //добавление параметров в словарь для последующего сохранения в базу
     //определение количества компонентов в UIPickerView
     
     if (self.selectedRowInComponent == 1) {
         
         self.selectPosition = [self pickerView:self.pickerView
-                                         titleForRow:[self.pickerView selectedRowInComponent:0] forComponent:0];
+                                   titleForRow:[self.pickerView selectedRowInComponent:0] forComponent:0];
         
         for (UILabel *label in self.labels) {
             
             if (label.tag == self.tagSelectCell && ![self.selectPosition isEqualToString:@"Отменить"]) {
-                label.text = self.selectPosition;
                 
-                NSString *key = [NSString stringWithFormat:@"%ld", (long)self.tagSelectCell];
-                [self.characteristicsUser setObject:self.selectPosition forKey:key];
-                
+                if (self.tagSelectCell == 4) {
+                    [self setTextLabelTag:label selectPosition:self.selectPosition];
+                } else if (self.tagSelectCell == 5) {
+                    [self setTextLabelTag:label selectPosition:self.selectPosition];
+                } else {
+                    [self setTextLabelTag:label selectPosition:self.selectPosition];
+                }
             }
-            
         }
         
     } else if (self.selectedRowInComponent == 2) {
+        
         
         NSString *minAge = [self pickerView:self.pickerView
                                          titleForRow:[self.pickerView selectedRowInComponent:0] forComponent:0];
@@ -541,25 +548,29 @@
         self.minAgeUnknownPeopleLabel.text = minAge;
         self.maxAgeUnknownPeopleLabel.text = maxAge;
         
-        NSString *key = @"2";
+        NSString *key = @"key2";
         
         [self.characteristicsUser setObject:selectAge forKey:key];
-        
+
     }
 
     //обновление словаря с данными
     if (self.fireUser.parameters) {
         
-        NSMutableDictionary *updateCharacteristicsUser = (NSMutableDictionary *)self.fireUser.parameters;
-        NSString *key = [NSString stringWithFormat:@"%ld", (long)self.tagSelectCell];
+        NSString *key = [NSString stringWithFormat:@"key%ld", (long)self.tagSelectCell];
         
         if (![self.selectPosition isEqualToString:@"Отменить"]) {
-            [updateCharacteristicsUser setValue:self.selectPosition forKey:key];
-            self.characteristicsUser = [NSMutableDictionary dictionaryWithDictionary:updateCharacteristicsUser];
             
+            if (self.tagSelectCell == 4) {
+                [self updateDictionaryValue:self.selectPosition byKey:key];
+            } else if (self.tagSelectCell == 5) {
+                [self updateDictionaryValue:self.selectPosition byKey:key];
+            } else {
+                [self updateDictionaryValue:self.selectPosition byKey:key];
+            }
         } else {
-            [updateCharacteristicsUser removeObjectForKey:key];
-            self.characteristicsUser = [NSMutableDictionary dictionaryWithDictionary:updateCharacteristicsUser];
+            
+            [self.characteristicsUser removeObjectForKey:key];
 
         }
     }
@@ -570,6 +581,52 @@
 {
     //удаление UIPickerView
     [self.pickerView removeFromSuperview];
+}
+
+
+//метод для добавления префиксов см и кг
+
+
+- (void)setTextLabelTag:(UILabel *)label selectPosition:(NSString *)string
+{
+    
+    NSString *valueText = nil;
+    
+    if (label.tag == 4) {
+        valueText = [NSString stringWithFormat:@"%@ см", string];
+    } else if (label.tag == 5) {
+        valueText = [NSString stringWithFormat:@"%@ кг", string];
+    } else {
+        valueText = string;
+    }
+    
+    label.text = valueText;
+    NSString *key = [NSString stringWithFormat:@"key%ld", (long)self.tagSelectCell];
+    [self.characteristicsUser setObject:valueText forKey:key];
+    
+}
+
+
+//методы обновления словаря данных
+
+
+- (void)updateDictionaryValue:(NSString *)string byKey:(NSString *)key
+{
+ 
+    NSString *text = nil;
+    
+    if (self.tagSelectCell == 4) {
+        text = [NSString stringWithFormat:@"%@ см", string];
+    } else if (self.tagSelectCell == 5) {
+        text = [NSString stringWithFormat:@"%@ кг", string];
+    } else {
+        text = string;
+    }
+    
+    NSMutableDictionary *updateCharacteristicsUser = (NSMutableDictionary *)self.fireUser.parameters;
+    [updateCharacteristicsUser setValue:text forKey:key];
+    self.characteristicsUser = [NSMutableDictionary dictionaryWithDictionary:updateCharacteristicsUser];
+    
 }
 
 
@@ -711,49 +768,46 @@
 - (IBAction)logOutAtionButton:(id)sender
 {
     
-//    //добавление параметра поиска пола
-//    NSMutableString *searchForGender = nil;
-//    
-//    if (self.stateButtonBoy == YES) {
-//        searchForGender = [NSMutableString stringWithString:@"man"];
-//        [self.characteristicsUser setObject:searchForGender forKey:@"1"];
-//    }
-//    
-//    if (self.stateButtonGirl == YES) {
-//        if (!searchForGender) {
-//            searchForGender = [NSMutableString stringWithString:@"woman"];
-//        } else {
-//            [searchForGender appendString:@" woman"];
-//        }
-//        
-//        [self.characteristicsUser setObject:searchForGender forKey:@"1"];
+    //добавление параметра поиска пола
+    
+    /// нужно сделать перезапись в userDefaults
+    
+    NSMutableString *searchForGender = nil;
+    
+//    if (self.fireUser.parameters) {
+//        self.characteristicsUser = self.fireUser.parameters;
 //    }
     
+    if (self.stateButtonBoy == YES) {
+        searchForGender = [NSMutableString stringWithString:@"man"];
+        [self.characteristicsUser setObject:searchForGender forKey:@"key1"];
+    }
+    
+    if (self.stateButtonGirl == YES) {
+        if (!searchForGender) {
+            searchForGender = [NSMutableString stringWithString:@"woman"];
+        } else {
+            [searchForGender appendString:@" woman"];
+        }
+        
+        [self.characteristicsUser setObject:searchForGender forKey:@"key1"];
+    }
+    
+    if (self.stateButtonBoy == YES && self.stateButtonGirl == YES) {
+        searchForGender = [NSMutableString stringWithString:@"man woman"];
+        [self.characteristicsUser setObject:searchForGender forKey:@"key1"];
+    }
+    
+    [self.userDefaults setBool:self.stateButtonBoy forKey:@"stateBoy"];
+    [self.userDefaults setBool:self.stateButtonGirl forKey:@"stateGirl"];
+    [self.userDefaults synchronize];
     
     [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid]
       child:@"parameters"] setValue:self.characteristicsUser];
 
-    NSLog(@"ЛОЖУ %@", self.characteristicsUser.description);
     
-    
-    //перезагрузка контроллера в момент сохранения новых данных
-    [self configureController];
-    
-    /*
-    
-    NSError *error;
-    [[FIRAuth auth] signOut:&error];
-    if (!error) {
-        NSLog(@"Log out");
-    }
-    
-    [[TSFacebookManager sharedManager] logOutUser];
-    
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
-    
-    TSSocialNetworkLoginViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"TSSocialNetworkLoginViewController"];
-    [self presentViewController:controller animated:YES completion:nil];
-     */
+    //перезагрузка интерфейса в момент сохранения новых данных
+    [self setDataUser];
     
 }
 
