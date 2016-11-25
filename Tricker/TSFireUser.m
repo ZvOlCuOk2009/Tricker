@@ -33,6 +33,7 @@
         FIRDataSnapshot *userEmail = fireUser.value[@"email"];
         FIRDataSnapshot *userPhoto = fireUser.value[@"photoURL"];
         FIRDataSnapshot *dateOfBirth = fireUser.value[@"dateOfBirth"];
+        FIRDataSnapshot *age = fireUser.value[@"age"];
         FIRDataSnapshot *location = fireUser.value[@"location"];
         FIRDataSnapshot *gender = fireUser.value[@"gender"];
         FIRDataSnapshot *parameters = fireUserParameters.value[@"parameters"];
@@ -43,6 +44,7 @@
         user.email = (NSString *)userEmail;
         user.photoURL = (NSString *)userPhoto;
         user.dateOfBirth = (NSString *)dateOfBirth;
+        user.age = (NSString *)age;
         user.location = (NSString *)location;
         user.gender = (NSString *)gender;
         user.parameters = (NSMutableDictionary *)parameters;

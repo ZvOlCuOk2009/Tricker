@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSString *photoURL;
 @property (strong, nonatomic) NSString *dateOfBirth;
+@property (strong, nonatomic) NSString *age;
 @property (strong, nonatomic) NSString *location;
 @property (strong, nonatomic) NSString *gender;
 @property (strong, nonatomic) NSMutableDictionary *parameters;

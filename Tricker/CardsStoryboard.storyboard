@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Cards View Controller-->
+        <!--Intermediate View Controller-->
         <scene sceneID="Zkg-Re-NEd">
             <objects>
-                <viewController storyboardIdentifier="TSCardsViewController" id="k29-4q-45z" customClass="TSCardsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TSIntermediateViewController" id="k29-4q-45z" customClass="TSIntermediateViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="1o1-5V-4V4"/>
                         <viewControllerLayoutGuide type="bottom" id="Fg5-Kq-l1D"/>
@@ -38,6 +38,35 @@
             </objects>
             <point key="canvasLocation" x="3500" y="968.36581709145435"/>
         </scene>
+        <!--Cards View Controller-->
+        <scene sceneID="zGx-fy-LGe">
+            <objects>
+                <viewController storyboardIdentifier="TSCardsViewController" id="8wN-Rq-AlW" customClass="TSCardsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1SS-LL-vdK"/>
+                        <viewControllerLayoutGuide type="bottom" id="beQ-u9-99I"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ft8-CO-yD8">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="69q-dD-i2x">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="69q-dD-i2x" firstAttribute="top" secondItem="Ft8-CO-yD8" secondAttribute="top" id="3vB-R8-3ji"/>
+                            <constraint firstAttribute="trailing" secondItem="69q-dD-i2x" secondAttribute="trailing" id="7A7-bZ-5El"/>
+                            <constraint firstItem="beQ-u9-99I" firstAttribute="top" secondItem="69q-dD-i2x" secondAttribute="bottom" id="QEm-7v-sWw"/>
+                            <constraint firstItem="69q-dD-i2x" firstAttribute="leading" secondItem="Ft8-CO-yD8" secondAttribute="leading" id="zFN-gc-0Zb"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6ug-3r-mwp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4292" y="968"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="fGx-hp-Ndz">
             <objects>
@@ -46,7 +75,7 @@
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="4wp-ym-Ca1">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="4wp-ym-Ca1">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

@@ -10,12 +10,24 @@
 
 @implementation TSSwipeView
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+
 - (void)drawRect:(CGRect)rect {
     // Drawing code
 }
-*/
+
+
++ (instancetype)profileView
+{
+    
+    TSSwipeView *view = nil;
+    
+    UINib *nib = [UINib nibWithNibName:@"TSSwipeView" bundle:nil];
+    view = [nib instantiateWithOwner:self options:nil][0];
+    view.frame = CGRectMake(20, 20, 280, 396);
+    
+    return view;
+    
+}
+
 
 @end

@@ -148,7 +148,8 @@
                     
                     self.avatarImageView.image = imagePhoto;
                     self.backgroundImageView.image = imagePhoto;
-                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.dateOfBirth location:self.fireUser.location];
+//                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.age location:self.fireUser.location];
+                    [self setParametrUser:self.fireUser];
                     
                     [SVProgressHUD dismiss];
                 });
@@ -161,7 +162,8 @@
                     UIImage *convertImage = [UIImage imageWithData:data];
                     self.avatarImageView.image = convertImage;
                     self.backgroundImageView.image = convertImage;
-                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.dateOfBirth location:self.fireUser.location];
+//                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.age location:self.fireUser.location];
+                    [self setParametrUser:self.fireUser];
                     
                     [SVProgressHUD dismiss];
                 });
@@ -199,55 +201,37 @@
 }
 
 
-- (void)setParametrUser:(NSString *)displayName gender:(NSString *)gender
-        dateOfBirth:(NSString *)dateOfBirth location:(NSString *)location
+//установка данных в лейблы
+
+
+- (void)setParametrUser:(TSFireUser *)fireUser
 {
-    
-    
-    if ([gender isEqualToString:@"man"]) {
+    if ([fireUser.gender isEqualToString:@"man"]) {
         [self.manButton setImage:self.pointImage forState:UIControlStateNormal];
         [self.womanButton setImage:self.circleImage forState:UIControlStateNormal];
-    } else if ([gender isEqualToString:@"woman"]) {
+    } else if ([fireUser.gender isEqualToString:@"woman"]) {
         [self.manButton setImage:self.circleImage forState:UIControlStateNormal];
         [self.womanButton setImage:self.pointImage forState:UIControlStateNormal];
     }
 
     
-    NSInteger age;
-    
-    
-    if (dateOfBirth) {
-        self.dateBirdthDayLabel.text = dateOfBirth;
-        
-        NSDate *currentData = [NSDate date];
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"dd-MM-yyyy"];
-        
-        NSDate *convertDateOfBirth = [dateFormatter dateFromString:dateOfBirth];
-        
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        
-        NSUInteger unitFlags = NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond;
-        NSDateComponents *components = [calendar components:unitFlags fromDate:convertDateOfBirth
-                                                     toDate:currentData options:0];
-        
-        age = [components year];
+    if (fireUser.dateOfBirth) {
+        self.dateBirdthDayLabel.text = fireUser.dateOfBirth;
 
     }
     
-    
-    if (age != 0) {
-        self.nameLabel.text = [NSString stringWithFormat:@"%@, %ld", displayName, (long)age];
-        self.textFieldName.placeholder = [NSString stringWithFormat:@"%@, %ld", displayName, (long)age];
+    if (fireUser.age) {
+        self.nameLabel.text = [NSString stringWithFormat:@"%@, %@", fireUser.displayName, fireUser.age];
+        self.textFieldName.placeholder = [NSString stringWithFormat:@"%@, %@", fireUser.displayName, fireUser.age];
     } else {
-        self.nameLabel.text = displayName;
-        self.textFieldName.placeholder = displayName;
+        self.nameLabel.text = fireUser.displayName;
+        self.textFieldName.placeholder = fireUser.displayName;
     }
     
-    
-    if (location) {
-        self.cityLabel.text = location;
+    if (fireUser.location) {
+        self.cityLabel.text = fireUser.location;
+    } else {
+        self.cityLabel.text = @"Место проживания";
     }
     
 }
@@ -292,10 +276,12 @@
 }
 
 
+//сохранение основных данных
+
+
 - (IBAction)saveUserAtionButton:(id)sender
 {
  
-    
     __block NSString *userID = nil;
     __block NSString *name = nil;
     __block NSString *photoURL = nil;
@@ -303,6 +289,7 @@
     
     NSString *gender = nil;
     NSString *dateOfBirth = nil;
+    NSString *age = nil;
     NSString *location = nil;
 
     
@@ -332,6 +319,11 @@
         dateOfBirth = self.fireUser.dateOfBirth;
     }
     
+    if ([self computationAge]) {
+        age = [self computationAge];
+    } else {
+        dateOfBirth = self.fireUser.age;
+    }
     
     if (self.selectCity) {
         location = self.selectCity;
@@ -365,6 +357,7 @@
                                    @"email":email,
                                    @"gender":gender,
                                    @"dateOfBirth":dateOfBirth,
+                                   @"age":age,
                                    @"location":location};
         
         [[[[[self.ref child:@"dataBase"] child:@"users"] child:userID] child:@"userData"] setValue:userData];
@@ -382,6 +375,31 @@
     
 }
 
+
+//вычисление возраста
+
+
+- (NSString *)computationAge
+{
+    
+    NSDate *currentData = [NSDate date];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"dd-MM-yyyy"];
+    
+    NSDate *convertDateOfBirth = [dateFormatter dateFromString:self.selectData];
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    NSUInteger unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    NSDateComponents *components = [calendar components:unitFlags fromDate:convertDateOfBirth
+                                                 toDate:currentData options:0];
+    NSInteger age;
+    age = [components year];
+    
+    return [NSString stringWithFormat:@"%ld", (long)age];
+    
+}
 
 
 #pragma mark - UITableViewDelegate
@@ -410,10 +428,8 @@
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    
     if (indexPath.row == 5 && self.stateDatePicker == NO)
     {
-
         NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ru_UA"];
         
         self.datePicker = [[UIDatePicker alloc] init];
@@ -467,6 +483,9 @@
 }
 
 
+//получение даты рождения
+
+
 - (void)doneAction:(id)sender
 {
     CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -512,6 +531,9 @@
 
 
 #pragma mark - change avatar frame when scrolling
+
+
+//кадрирование аватара
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView

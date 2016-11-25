@@ -45,7 +45,7 @@
     [[TSFacebookManager sharedManager] logOutUser];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"token"];
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MapStoryboard" bundle:[NSBundle mainBundle]];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
     TSSocialNetworkLoginViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"TSSocialNetworkLoginViewController"];
     
     [self presentViewController:controller animated:YES completion:nil];

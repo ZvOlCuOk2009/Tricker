@@ -114,7 +114,6 @@
 - (void)configureController
 {
 
-    
     [self setDataUser];
     
     self.doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Готово" style:UIBarButtonItemStylePlain
@@ -194,7 +193,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 self.avatarImageView.image = imagePhoto;
-                [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
+                [self setParametrUser:self.fireUser];
                 
                 [SVProgressHUD dismiss];
             });
@@ -206,7 +205,7 @@
                 NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
                 UIImage *convertImage = [UIImage imageWithData:data];
                 self.avatarImageView.image = convertImage;
-                [self setParametrUser:self.fireUser.displayName dateOfBirth:self.fireUser.dateOfBirth parameters:self.fireUser.parameters];
+                [self setParametrUser:self.fireUser];
                 
                 [SVProgressHUD dismiss];
             });
@@ -221,50 +220,34 @@
 }
 
 
-- (void)setParametrUser:(NSString *)displayName dateOfBirth:(NSString *)dateOfBirth parameters:(NSMutableDictionary *)parameters
+- (void)setParametrUser:(TSFireUser *)fireUser
 {
     //очистка всех лейблов перед загрузкой новых данных
     for (UILabel *label in self.self.labels) {
         label.text = @"";
     }
     
-    NSInteger age;
-    
     //вычисление возраста
-    if (dateOfBirth) {
+    if (fireUser.age) {
         
-        NSDate *currentData = [NSDate date];
-        
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"dd-MM-yyyy"];
-        
-        NSDate *convertDateOfBirth = [dateFormatter dateFromString:dateOfBirth];
-        
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        
-        NSUInteger unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
-        NSDateComponents *components = [calendar components:unitFlags fromDate:convertDateOfBirth
-                                                     toDate:currentData options:0];
-        
-        age = [components year];
-        
+        self.ageLabel.text = fireUser.age;
     }
     
-    self.nameLabel.text = displayName;
-    self.ageLabel.text = [NSString stringWithFormat:@"%ld", (long)age];
+    self.nameLabel.text = fireUser.displayName;
+    
     
     //установка параметров из базы если уже есть данные
-    if (parameters) {
+    if (fireUser.parameters) {
         
 
-        self.allKeysParameters = [parameters allKeys];
+        self.allKeysParameters = [fireUser.parameters allKeys];
         
         for (NSString *key in self.allKeysParameters) {
             for (UILabel *label in self.labels) {
                 NSString *tag = [NSString stringWithFormat:@"%ld", (long)label.tag];
                 NSString *shortKey = [key substringFromIndex:3];
                 if ([shortKey isEqualToString:tag]) {
-                    label.text = [parameters objectForKey:key];
+                    label.text = [fireUser.parameters objectForKey:key];
                 }
             }
             
@@ -278,7 +261,7 @@
             
             
             if ([shortKey isEqualToString:@"1"]) {
-                NSString *searchGender = [parameters objectForKey:key];
+                NSString *searchGender = [fireUser.parameters objectForKey:key];
                 NSArray *components = [searchGender componentsSeparatedByString:@" "];
                 if ([components count] > 1) {
                     
@@ -296,7 +279,7 @@
             //установка даты для поиска пользователей
             
             if ([shortKey isEqualToString:@"2"]) {
-                NSString *ageRange = [parameters objectForKey:key];
+                NSString *ageRange = [fireUser.parameters objectForKey:key];
                 NSArray *components = [ageRange componentsSeparatedByString:@" "];
                 if ([components count] > 1) {
                     self.minAgeUnknownPeopleLabel.text = [components objectAtIndex:0];
@@ -314,6 +297,8 @@
 - (IBAction)actionBoyButton:(id)sender
 {
     
+    [self updateCharacteristicUser];
+    
     if (self.stateButtonBoy == NO) {
         [sender setImage:self.checked forState:UIControlStateNormal];
         self.stateButtonBoy = YES;
@@ -329,6 +314,8 @@
 - (IBAction)actionGirlButton:(id)sender
 {
     
+    [self updateCharacteristicUser];
+    
     if (self.stateButtonGirl == NO) {
         [sender setImage:self.checked forState:UIControlStateNormal];
         self.stateButtonGirl = YES;
@@ -338,6 +325,14 @@
         [self.characteristicsUser removeObjectForKey:@"key1"];
     }
 
+}
+
+
+- (void)updateCharacteristicUser
+{
+    if (self.fireUser.parameters) {
+        self.characteristicsUser = self.fireUser.parameters;
+    }
 }
 
 
@@ -774,9 +769,7 @@
     
     NSMutableString *searchForGender = nil;
     
-//    if (self.fireUser.parameters) {
-//        self.characteristicsUser = self.fireUser.parameters;
-//    }
+    [self updateCharacteristicUser];
     
     if (self.stateButtonBoy == YES) {
         searchForGender = [NSMutableString stringWithString:@"man"];
@@ -805,7 +798,6 @@
     [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid]
       child:@"parameters"] setValue:self.characteristicsUser];
 
-    
     //перезагрузка интерфейса в момент сохранения новых данных
     [self setDataUser];
     
