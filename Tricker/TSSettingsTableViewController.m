@@ -76,8 +76,6 @@
 @property (strong, nonatomic) NSString *selectPosition;
 @property (strong, nonatomic) NSString *curentGender;
 
-@property (strong, nonatomic) NSUserDefaults *userDefaults;
-
 @property (assign, nonatomic) NSInteger selectedRowInComponent;
 @property (assign, nonatomic) NSInteger tagSelectCell;
 
@@ -161,9 +159,7 @@
     
     //создание массива лейблов
     self.labels = @[self.minAgeUnknownPeopleLabel, self.maxAgeUnknownPeopleLabel, self.growthLabel, self.weightLabel, self.targetLabel, self.figureLabel, self.eyesLabel, self.hairLabel, self.relationsLabel, self.childsLabel, self.earningsLabel, self.educationLabel, self.housingLabel, self.automobileLabel, self.smokingLabel, self.alcoholeLabel];
-    
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
-    
+        
     self.checked = [UIImage imageNamed:@"checked"];
     self.checkbox = [UIImage imageNamed:@"check-box-empty"];
     
@@ -227,7 +223,7 @@
         label.text = @"";
     }
     
-    //вычисление возраста
+    //установка возраста
     if (fireUser.age) {
         
         self.ageLabel.text = fireUser.age;
@@ -255,25 +251,28 @@
             
             NSString *shortKey = [key substringFromIndex:3];
             
-            if ([shortKey isEqualToString:@"4"]) {
-                
-            }
-            
-            
             if ([shortKey isEqualToString:@"1"]) {
+
                 NSString *searchGender = [fireUser.parameters objectForKey:key];
                 NSArray *components = [searchGender componentsSeparatedByString:@" "];
+                
                 if ([components count] > 1) {
-                    
+                    self.stateButtonBoy = YES;
+                    self.stateButtonGirl = YES;
                     [self.manButton setImage:self.checked forState:UIControlStateNormal];
                     [self.womanButton setImage:self.checked forState:UIControlStateNormal];
                     
                 } else {
                     
                     if ([[components objectAtIndex:0] isEqualToString:@"man"]) {
+                        self.stateButtonBoy = YES;
                         [self.manButton setImage:self.checked forState:UIControlStateNormal];
-                    } else if ([[components objectAtIndex:0] isEqualToString:@"woman"])
+                        [self.womanButton setImage:self.checkbox forState:UIControlStateNormal];
+                    } else if ([[components objectAtIndex:0] isEqualToString:@"woman"]) {
+                        self.stateButtonGirl = YES;
                         [self.womanButton setImage:self.checked forState:UIControlStateNormal];
+                        [self.manButton setImage:self.checkbox forState:UIControlStateNormal];
+                    }
                 }
             }
             //установка даты для поиска пользователей
@@ -429,7 +428,7 @@
 
 - (void)createdUipickerView:(NSInteger)tag
 {
-    //созданеи UIPickerView
+    //создание UIPickerView
     self.pickerView = [[UIPickerView alloc] init];
     [self.pickerView setValue:DARK_GRAY_COLOR forKey:@"textColor"];
     self.pickerView.backgroundColor = LIGHT_YELLOW_COLOR;
@@ -757,15 +756,13 @@
 }
 
 
-#pragma mark - Action log out
+#pragma mark - update parameters
 
 
 - (IBAction)logOutAtionButton:(id)sender
 {
     
     //добавление параметра поиска пола
-    
-    /// нужно сделать перезапись в userDefaults
     
     NSMutableString *searchForGender = nil;
     
@@ -791,9 +788,6 @@
         [self.characteristicsUser setObject:searchForGender forKey:@"key1"];
     }
     
-    [self.userDefaults setBool:self.stateButtonBoy forKey:@"stateBoy"];
-    [self.userDefaults setBool:self.stateButtonGirl forKey:@"stateGirl"];
-    [self.userDefaults synchronize];
     
     [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid]
       child:@"parameters"] setValue:self.characteristicsUser];

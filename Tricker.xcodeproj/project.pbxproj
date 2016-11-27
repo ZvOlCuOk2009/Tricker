@@ -41,6 +41,8 @@
 		FDF9639C1DD14598000877B5 /* TSPhotoAndNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF9639B1DD14598000877B5 /* TSPhotoAndNameViewController.m */; };
 		FDFDFC951DD26A28007811EF /* TSAutorizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDFDFC941DD26A27007811EF /* TSAutorizationViewController.m */; };
 		FDFDFC981DD293E0007811EF /* TSProfileTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDFDFC971DD293E0007811EF /* TSProfileTableViewController.m */; };
+		FDFF9D831DEA251E00F4971B /* TSAlertViewCard.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDFF9D821DEA251E00F4971B /* TSAlertViewCard.xib */; };
+		FDFF9D861DEA277500F4971B /* TSAlertViewCard.m in Sources */ = {isa = PBXBuildFile; fileRef = FDFF9D851DEA277500F4971B /* TSAlertViewCard.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +126,9 @@
 		FDFDFC941DD26A27007811EF /* TSAutorizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSAutorizationViewController.m; sourceTree = "<group>"; };
 		FDFDFC961DD293E0007811EF /* TSProfileTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSProfileTableViewController.h; sourceTree = "<group>"; };
 		FDFDFC971DD293E0007811EF /* TSProfileTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSProfileTableViewController.m; sourceTree = "<group>"; };
+		FDFF9D821DEA251E00F4971B /* TSAlertViewCard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TSAlertViewCard.xib; sourceTree = "<group>"; };
+		FDFF9D841DEA277500F4971B /* TSAlertViewCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSAlertViewCard.h; sourceTree = "<group>"; };
+		FDFF9D851DEA277500F4971B /* TSAlertViewCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSAlertViewCard.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +205,9 @@
 				FD0C1C9F1DE783B500D37B61 /* TSSwipeView.xib */,
 				FD0C1CA11DE78B9B00D37B61 /* TSSwipeView.h */,
 				FD0C1CA21DE78B9B00D37B61 /* TSSwipeView.m */,
+				FDFF9D821DEA251E00F4971B /* TSAlertViewCard.xib */,
+				FDFF9D841DEA277500F4971B /* TSAlertViewCard.h */,
+				FDFF9D851DEA277500F4971B /* TSAlertViewCard.m */,
 			);
 			name = Xib;
 			sourceTree = "<group>";
@@ -230,8 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				FD45D0811DD7BE1C00EB2640 /* App */,
-				FD1C4F6D1DCE86E800CF63E9 /* TSFacebookManager.h */,
-				FD1C4F6E1DCE86E800CF63E9 /* TSFacebookManager.m */,
+				FDF716C71DEB32A10014171F /* Managers */,
 				FDE927361DE840B900FF884F /* Models */,
 				FD0C1C9E1DE7833100D37B61 /* Xib */,
 				FD45D0821DD7CEDC00EB2640 /* Cell */,
@@ -313,6 +320,15 @@
 				FDE927381DE840EC00FF884F /* TSFireBase.m */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		FDF716C71DEB32A10014171F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				FD1C4F6D1DCE86E800CF63E9 /* TSFacebookManager.h */,
+				FD1C4F6E1DCE86E800CF63E9 /* TSFacebookManager.m */,
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 		FDF8CDB31DDA768400E159B1 /* Storyboards */ = {
@@ -462,6 +478,7 @@
 			files = (
 				FD68B4611DDA7D0C00EF19C3 /* SettingStoryboard.storyboard in Resources */,
 				FD68B45B1DDA7CC100EF19C3 /* MapStoryboard.storyboard in Resources */,
+				FDFF9D831DEA251E00F4971B /* TSAlertViewCard.xib in Resources */,
 				FD68B45F1DDA7CFC00EF19C3 /* ChatStoryboard.storyboard in Resources */,
 				FD1C4F411DCE252200CF63E9 /* LaunchScreen.storyboard in Resources */,
 				FD68B45D1DDA7CEC00EF19C3 /* CardsStoryboard.storyboard in Resources */,
@@ -542,6 +559,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDFF9D861DEA277500F4971B /* TSAlertViewCard.m in Sources */,
 				FDE9273C1DE8EC4600FF884F /* TSIntermediateViewController.m in Sources */,
 				FD45D0801DD7BE0F00EB2640 /* TSSearchBar.m in Sources */,
 				FD1C4F661DCE280400CF63E9 /* TSTabBarViewController.m in Sources */,

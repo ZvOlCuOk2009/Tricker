@@ -57,6 +57,7 @@
     
     self.ref = [[FIRDatabase database] reference];
     [self configureController];
+    NSLog(@"L O A D   A P P!!!");
 }
 
 - (void)didReceiveMemoryWarning {
@@ -148,7 +149,6 @@
                     
                     self.avatarImageView.image = imagePhoto;
                     self.backgroundImageView.image = imagePhoto;
-//                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.age location:self.fireUser.location];
                     [self setParametrUser:self.fireUser];
                     
                     [SVProgressHUD dismiss];
@@ -162,7 +162,6 @@
                     UIImage *convertImage = [UIImage imageWithData:data];
                     self.avatarImageView.image = convertImage;
                     self.backgroundImageView.image = convertImage;
-//                    [self setParametrUser:self.fireUser.displayName gender:self.fireUser.gender dateOfBirth:self.fireUser.age location:self.fireUser.location];
                     [self setParametrUser:self.fireUser];
                     
                     [SVProgressHUD dismiss];
@@ -228,7 +227,7 @@
         self.textFieldName.placeholder = fireUser.displayName;
     }
     
-    if (fireUser.location) {
+    if (fireUser.location && ![fireUser.location isEqualToString:@""]) {
         self.cityLabel.text = fireUser.location;
     } else {
         self.cityLabel.text = @"Место проживания";

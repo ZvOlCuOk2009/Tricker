@@ -23,10 +23,7 @@
         
     }];
 
-
-    //    self.tabBar.backgroundColor = DARK_GRAY_COLOR;
-
-    [[UITabBar appearance] setTintColor:DARK_GRAY_COLOR];
+//    [[UITabBar appearance] setTintColor:DARK_GRAY_COLOR];
     
 }
 

@@ -12,18 +12,50 @@
 
 
 - (void)drawRect:(CGRect)rect {
-    // Drawing code
+    
+    //[self awakeFromNib];
 }
 
 
-+ (instancetype)profileView
+- (void)setup {
+   
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowOpacity = 0.33;
+    self.layer.shadowOffset = CGSizeMake(0, 1.5);
+    self.layer.shadowRadius = 4.0;
+    self.layer.shouldRasterize = YES;
+    self.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    
+}
+
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setup];
+    }    return self;
+}
+
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+
++ (instancetype)initProfileView
 {
     
     TSSwipeView *view = nil;
     
     UINib *nib = [UINib nibWithNibName:@"TSSwipeView" bundle:nil];
     view = [nib instantiateWithOwner:self options:nil][0];
-    view.frame = CGRectMake(20, 20, 280, 396);
+    view.frame = CGRectMake(10, 30, 300, 396);
     
     return view;
     

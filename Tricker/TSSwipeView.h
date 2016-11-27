@@ -18,6 +18,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *chatButton;
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
 
-+ (instancetype)profileView;
++ (instancetype)initProfileView;
 
 @end

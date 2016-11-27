@@ -11,19 +11,17 @@
 #import "TSFireBase.h"
 #import "ZLSwipeableView.h"
 #import "TSSwipeView.h"
-
-//@import Firebase;
-//@import FirebaseAuth;
-//@import FirebaseDatabase;
+#import "TSAlertViewCard.h"
+#import "TSSettingsTableViewController.h"
+#import "TSTrickerPrefixHeader.pch"
 
 @interface TSCardsViewController () <ZLSwipeableViewDataSource, ZLSwipeableViewDelegate>
 
-//@property (strong, nonatomic) FIRDatabaseReference *ref;
-//@property (strong, nonatomic) TSFireUser *fireUser;
 @property (strong, nonatomic) ZLSwipeableView *swipeableView;
 @property (weak, nonatomic) TSSwipeView *swipeView;
 
 @property (assign, nonatomic) NSInteger counter;
+@property (assign, nonatomic) NSInteger count;
 
 @end
 
@@ -32,16 +30,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [[self navigationController] setNavigationBarHidden:YES animated:YES];
-    
-//    self.ref = [[FIRDatabase database] reference];
-//    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-//        
-//        self.fireUser = [TSFireUser initWithSnapshot:snapshot];
-//        self.fireBase = [TSFireBase initWithSnapshot:snapshot];
-    
-        [self configureController];
-//    }];
+    [self configureController];
 }
 
 
@@ -63,6 +52,8 @@
     [self.swipeableView discardAllViews];
     [self.swipeableView loadViewsIfNeeded];
     
+    self.counter = 0;
+    self.count = 0;
 }
 
 
@@ -76,15 +67,20 @@
     
     if (self.selectedUsers.count > 0) {
         
-        NSDictionary *selectedUser = [self.selectedUsers objectAtIndex:indexPath.row];
+        NSInteger indexPathRow = indexPath.row;
+        NSDictionary *selectedUser = [self.selectedUsers objectAtIndex:indexPathRow];
         
-        self.swipeView = [TSSwipeView profileView];
+        self.swipeView = [TSSwipeView initProfileView];
         
         NSInteger max = [self.selectedUsers count];
-        NSString *photoURL = [selectedUser objectForKey:@"photoURL"];
         
-        self.swipeView.nameLabel.text = [selectedUser objectForKey:@"displayName"];
-        self.swipeView.ageLabel.text = [selectedUser objectForKey:@"age"];
+        NSDictionary *selectedUserData = [selectedUser objectForKey:@"userData"];
+        NSString *photoURL = [selectedUserData objectForKey:@"photoURL"];
+        NSString *displayName = [selectedUserData objectForKey:@"displayName"];
+        NSString *age = [selectedUserData objectForKey:@"age"];
+        
+        self.swipeView.nameLabel.text = displayName;
+        self.swipeView.ageLabel.text = age;
         
         
         NSURL *url = [NSURL URLWithString:photoURL];
@@ -107,17 +103,48 @@
             self.swipeView.avatarImageView.image = convertImage;
         }
         
+        self.swipeView.avatarImageView.layer.cornerRadius = 110;
         
-        ++self.counter;
+        self.counter++;
         
         if (self.counter == max) {
+            
+//            [UIView animateWithDuration:0.35
+//                                  delay:0.0
+//                 usingSpringWithDamping:1.5
+//                  initialSpringVelocity:0.9
+//                                options:UIViewAnimationOptionAllowUserInteraction
+//                             animations:^{
+//                                 TSAlertViewCard *alertViewCard = [TSAlertViewCard initAlertViewCard];
+//                                 alertViewCard.frame = CGRectOffset(alertViewCard.frame, 0, 150);
+//                                 [self.view addSubview:alertViewCard];
+//                             } completion:^(BOOL finished) {
+//                                 
+//                             }];
+            
             self.counter = 0;
         }
+        
     } else {
         //alert!!!
     }
     
     return self.swipeView;
+}
+
+
+- (void)changeActionAlertView
+{
+    NSLog(@"changeActionAlertView");
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"SettingStoryboard" bundle:[NSBundle mainBundle]];
+    TSSettingsTableViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"SettingStoryboard"];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
+
+- (void)repeatActionAlertView
+{
+    NSLog(@"repeatActionAlertView");
 }
 
 

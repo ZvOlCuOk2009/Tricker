@@ -7,8 +7,12 @@
 //
 
 #import "TSIntermediateViewController.h"
+#import "TSCardsViewController.h"
 #import "TSFireUser.h"
 #import "TSFireBase.h"
+#import "TSTrickerPrefixHeader.pch"
+
+#import <SVProgressHUD.h>
 
 @import Firebase;
 @import FirebaseAuth;
@@ -21,6 +25,9 @@
 @property (strong, nonatomic) NSMutableArray *usersFoundOnTheAge;
 @property (strong, nonatomic) NSMutableArray *usersFoundOnGenderAndAge;
 
+@property (strong, nonatomic) NSString *genderSearch;
+@property (strong, nonatomic) NSString *ageSearch;
+
 @property (strong, nonatomic) FIRDatabaseReference *ref;
 @property (strong, nonatomic) TSFireUser *fireUser;
 
@@ -30,8 +37,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [self configureController];
+    
+    self.ref = [[FIRDatabase database] reference];
+    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        self.fireUser = [TSFireUser initWithSnapshot:snapshot];
+        self.fireBase = [TSFireBase initWithSnapshot:snapshot];
+        
+        [self configureController];
+    }];
+    
+    [[self navigationController] setNavigationBarHidden:YES animated:YES];
+    
 }
 
 
@@ -41,14 +58,26 @@
 }
 
 
+-(void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [SVProgressHUD dismiss];
+}
+
+
 #pragma mark - configure the controller
 
 
 - (void)configureController
 {
 
-    NSString *genderSearch = [self.fireUser.parameters objectForKey:@"key1"];
-    NSString *ageSearch = [self.fireUser.parameters objectForKey:@"key2"];
+    [SVProgressHUD show];
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+    [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
+    [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
+    
+    self.genderSearch = [self.fireUser.parameters objectForKey:@"key1"];
+    self.ageSearch = [self.fireUser.parameters objectForKey:@"key2"];
     
     NSArray *keysTaBase = [self.fireBase allKeys];
     
@@ -56,23 +85,23 @@
     self.usersFoundOnTheAge = [NSMutableArray array];
     self.usersFoundOnGenderAndAge = [NSMutableArray array];
     
-    if (genderSearch) {
+    if (self.genderSearch) {
         
         [self userSelectionOfGender:keysTaBase];
     }
     
-    if (ageSearch) {
+    if (self.ageSearch) {
         
         [self userSelectionOfAge:keysTaBase];
     }
     
-    if (genderSearch && ageSearch) {
+    if (self.genderSearch && self.ageSearch) {
         
         for (NSDictionary *selectedUserTheGender in self.usersFoundOnTheGender) {
             NSDictionary *userData = [selectedUserTheGender objectForKey:@"userData"];
             NSString *age = [userData objectForKey:@"age"];
             NSString *name = [userData objectForKey:@"displayName"];
-            if ([self computationSearchAge:ageSearch receivedAge:age]) {
+            if ([self computationSearchAge:self.ageSearch receivedAge:age]) {
                 [self.usersFoundOnGenderAndAge addObject:selectedUserTheGender];
                 NSLog(@"name gender and age %@", name);
             }
@@ -80,6 +109,8 @@
     }
     
     NSLog(@"Gender and count %ld", (long)[self.usersFoundOnGenderAndAge count]);
+    
+    [self prepareForSegue];
 }
 
 
@@ -88,15 +119,37 @@
     
     NSString *genderSearch = [self.fireUser.parameters objectForKey:@"key1"];
     
-    for (NSString *key in allKeysTaBase) {
-        NSDictionary *anyUser = [self.fireBase objectForKey:key];
-        NSDictionary *userData = [anyUser objectForKey:@"userData"];
-        NSString *genderAnyUser = [userData objectForKey:@"gender"];
+    NSArray *componentGender = [genderSearch componentsSeparatedByString:@" "];
+    
+    if ([componentGender count] > 1) {
         
-        if ([genderAnyUser isEqualToString:genderSearch] && ![self.fireUser.uid isEqualToString:key]) {
-            [self.usersFoundOnTheGender addObject:anyUser];
+        NSString *man = [componentGender objectAtIndex:0];
+        NSString *woman = [componentGender objectAtIndex:1];
+        
+        for (NSString *key in allKeysTaBase) {
+            NSDictionary *anyUser = [self.fireBase objectForKey:key];
+            NSDictionary *userData = [anyUser objectForKey:@"userData"];
+            NSString *genderAnyUser = [userData objectForKey:@"gender"];
+            
+            if (([genderAnyUser isEqualToString:man] && ![self.fireUser.uid isEqualToString:key]) ||
+                ([genderAnyUser isEqualToString:woman] && ![self.fireUser.uid isEqualToString:key])) {
+                [self.usersFoundOnTheGender addObject:anyUser];
+            }
+        }
+        
+    } else {
+        
+        for (NSString *key in allKeysTaBase) {
+            NSDictionary *anyUser = [self.fireBase objectForKey:key];
+            NSDictionary *userData = [anyUser objectForKey:@"userData"];
+            NSString *genderAnyUser = [userData objectForKey:@"gender"];
+            
+            if ([genderAnyUser isEqualToString:genderSearch] && ![self.fireUser.uid isEqualToString:key]) {
+                [self.usersFoundOnTheGender addObject:anyUser];
+            }
         }
     }
+    
 }
 
 
@@ -134,6 +187,29 @@
     }
     
     return totalValue;
+    
+}
+
+
+- (void)prepareForSegue
+{
+    
+    NSMutableArray *selectedUsers = nil;
+    
+    if (self.genderSearch) {
+        selectedUsers = [NSMutableArray arrayWithArray:self.usersFoundOnTheGender];
+    } else if (self.ageSearch) {
+        selectedUsers = [NSMutableArray arrayWithArray:self.usersFoundOnTheAge];
+    }
+    
+    if (self.genderSearch && self.ageSearch) {
+        selectedUsers = [NSMutableArray arrayWithArray:self.usersFoundOnGenderAndAge];
+    }
+    
+    TSCardsViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"TSCardsViewController"];
+    controller.selectedUsers = selectedUsers;
+    
+    [self.navigationController pushViewController:controller animated:NO];
     
 }
 
