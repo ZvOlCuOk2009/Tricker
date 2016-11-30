@@ -56,34 +56,20 @@
     [super viewDidLoad];
     
     self.ref = [[FIRDatabase database] reference];
-    [self configureController];
-    NSLog(@"L O A D   A P P!!!");
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-
-}
-
-
-- (void)viewWillAppear:(BOOL)animated
-{
     
-    if (self.selectCity) {
-        self.cityLabel.text = self.selectCity;
-    }
+    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        self.fireUser = [TSFireUser initWithSnapshot:snapshot];
+        
+        [self configureController];
+        
+    }];
     
-}
-
-#pragma mark - configure the controller
-
-
-- (void)configureController
-{
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
     self.tableView.backgroundView = imageView;
-
+    
+    //начальные парметры аватара
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
@@ -120,59 +106,83 @@
             self.fixOffset = kAvatarOffset_6_S;
             self.fixCornerRadius = kAvatarCornerRadius_6_S;
         }
+    } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        
+        if (IS_IPAD_2) {
+            self.heightHeader = kHeightHeader_6_S;
+            self.valueWidthAvatarConstraint.constant = kAvatarSide_6_S;
+            self.valueHieghtAvatarConstraint.constant = kAvatarSide_6_S;
+            self.avatarImageView.layer.cornerRadius = kAvatarSide_6_S / 2;
+            self.fixSide = kAvatarSide_6_S;
+            self.fixOffset = kAvatarOffset_6_S;
+            self.fixCornerRadius = kAvatarCornerRadius_6_S;
+        }
     }
-    
     
     self.avatarImageView.clipsToBounds = YES;
     
     [self.tableView setSeparatorColor:DARK_GRAY_COLOR];
     
-    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-        
-        [SVProgressHUD show];
-        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
-        [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
-        [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            self.fireUser = [TSFireUser initWithSnapshot:snapshot];
-            
-            NSURL *urlPhoto = [NSURL URLWithString:self.fireUser.photoURL];
-            
-            UIImage *imagePhoto = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlPhoto]];
-            
-            
-            if (urlPhoto && urlPhoto.scheme && urlPhoto.host) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    self.avatarImageView.image = imagePhoto;
-                    self.backgroundImageView.image = imagePhoto;
-                    [self setParametrUser:self.fireUser];
-                    
-                    [SVProgressHUD dismiss];
-                });
-                
-            } else {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                    UIImage *convertImage = [UIImage imageWithData:data];
-                    self.avatarImageView.image = convertImage;
-                    self.backgroundImageView.image = convertImage;
-                    [self setParametrUser:self.fireUser];
-                    
-                    [SVProgressHUD dismiss];
-                });
-                
-            }
-            
-        });
-        
-    }];
+}
 
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+    if (self.selectCity) {
+        self.cityLabel.text = self.selectCity;
+    }
+    
+}
+
+#pragma mark - configure the controller
+
+
+- (void)configureController
+{
+    
+    [SVProgressHUD show];
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
+    [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
+    [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSURL *urlPhoto = [NSURL URLWithString:self.fireUser.photoURL];
+        UIImage *imagePhoto = [UIImage imageWithData:[NSData dataWithContentsOfURL:urlPhoto]];
+        
+        if (urlPhoto && urlPhoto.scheme && urlPhoto.host) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self setAvatarAndBackground:imagePhoto];
+                [self setParametrUser:self.fireUser];
+                
+                [SVProgressHUD dismiss];
+            });
+            
+        } else {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSData *data = [[NSData alloc] initWithBase64EncodedString:self.fireUser.photoURL options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                UIImage *convertImage = [UIImage imageWithData:data];
+                
+                [self setAvatarAndBackground:convertImage];
+                [self setParametrUser:self.fireUser];
+                
+                [SVProgressHUD dismiss];
+            });
+            
+        }
+        
+    });
+    
     
     self.pointImage = [UIImage imageNamed:@"click"];
     self.circleImage = [UIImage imageNamed:@"no_click"];
@@ -200,7 +210,14 @@
 }
 
 
-//установка данных в лейблы
+//установка аватара и данных в лейблы
+
+
+- (void)setAvatarAndBackground:(UIImage *)image
+{
+    self.avatarImageView.image = image;
+    self.backgroundImageView.image = image;
+}
 
 
 - (void)setParametrUser:(TSFireUser *)fireUser
@@ -285,6 +302,7 @@
     __block NSString *name = nil;
     __block NSString *photoURL = nil;
     __block NSString *email = nil;
+    __block NSString *online = nil;
     
     NSString *gender = nil;
     NSString *dateOfBirth = nil;
@@ -296,6 +314,7 @@
     name = self.fireUser.displayName;
     photoURL = self.fireUser.photoURL;
     email = self.fireUser.email;
+    online = self.fireUser.online;
         
     
     
@@ -354,10 +373,11 @@
                                    @"displayName":name,
                                    @"photoURL":photoURL,
                                    @"email":email,
-                                   @"gender":gender,
                                    @"dateOfBirth":dateOfBirth,
+                                   @"gender":gender,
                                    @"age":age,
-                                   @"location":location};
+                                   @"location":location,
+                                   @"online":online};
         
         [[[[[self.ref child:@"dataBase"] child:@"users"] child:userID] child:@"userData"] setValue:userData];
         
@@ -416,6 +436,17 @@
     if (indexPath.row == 7)
     {
         return kHeightCellButtonSaveAndOut;
+    }
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        if (IS_IPAD_2) {
+            
+            if (indexPath.row == 0)
+            {
+                return 300;
+            }
+        }
     }
     
     return kHeightCell;

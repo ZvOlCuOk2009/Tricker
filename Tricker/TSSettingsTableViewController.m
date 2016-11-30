@@ -14,6 +14,8 @@
 
 #import <SVProgressHUD.h>
 
+NSString * const UpdateParametersNotification = @"UpdateParametersNotification";
+
 @import Firebase;
 @import FirebaseAuth;
 @import FirebaseDatabase;
@@ -761,7 +763,6 @@
 
 - (IBAction)logOutAtionButton:(id)sender
 {
-    
     //добавление параметра поиска пола
     
     NSMutableString *searchForGender = nil;
@@ -791,7 +792,7 @@
     
     [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid]
       child:@"parameters"] setValue:self.characteristicsUser];
-
+    
     //перезагрузка интерфейса в момент сохранения новых данных
     [self setDataUser];
     

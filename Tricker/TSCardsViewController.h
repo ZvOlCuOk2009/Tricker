@@ -14,5 +14,6 @@
 
 - (void)changeActionAlertView;
 - (void)repeatActionAlertView;
+- (void)rotationViewToClockwise;
 
 @end

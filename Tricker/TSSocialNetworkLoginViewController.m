@@ -175,6 +175,8 @@
         NSString *dateOfBirth = @"";
         NSString *location = @"";
         NSString *gender = @"";
+        NSString *age = @"";
+        NSString *online = @"";
         
         if (!email) {
             email = @"email";
@@ -187,7 +189,9 @@
                      @"email":email,
                      @"dateOfBirth":dateOfBirth,
                      @"location":location,
-                     @"gender":gender};
+                     @"gender":gender,
+                     @"age":age,
+                     @"online":online};
         
         [[[[[self.ref child:@"dataBase"] child:@"users"] child:user.uid] child:@"userData"] setValue:userData];
         

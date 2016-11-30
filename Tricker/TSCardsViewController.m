@@ -21,7 +21,6 @@
 @property (weak, nonatomic) TSSwipeView *swipeView;
 
 @property (assign, nonatomic) NSInteger counter;
-@property (assign, nonatomic) NSInteger count;
 
 @end
 
@@ -53,7 +52,22 @@
     [self.swipeableView loadViewsIfNeeded];
     
     self.counter = 0;
-    self.count = 0;
+    
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[[[self.tabBarController tabBar] items] objectAtIndex:2] setEnabled:NO];
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[[[self.tabBarController tabBar] items] objectAtIndex:2] setEnabled:YES];
+    [self.tabBarItem setImage:[UIImage imageNamed:@"cards_click"]];
 }
 
 
@@ -75,14 +89,22 @@
         NSInteger max = [self.selectedUsers count];
         
         NSDictionary *selectedUserData = [selectedUser objectForKey:@"userData"];
+        NSDictionary *parametersUser = [selectedUser objectForKey:@"parameters"];
         NSString *photoURL = [selectedUserData objectForKey:@"photoURL"];
         NSString *displayName = [selectedUserData objectForKey:@"displayName"];
         NSString *age = [selectedUserData objectForKey:@"age"];
+        NSString *online = [selectedUserData objectForKey:@"online"];
         
         self.swipeView.nameLabel.text = displayName;
         self.swipeView.ageLabel.text = age;
         
         
+        if ([online isEqualToString:@"оффлайн"]) {
+            self.swipeView.onlineView.backgroundColor = [UIColor redColor];
+        } else if ([online isEqualToString:@"онлайн"]) {
+            self.swipeView.onlineView.backgroundColor = [UIColor greenColor];
+        }
+            
         NSURL *url = [NSURL URLWithString:photoURL];
         
         if (url && url.scheme && url.host) {
@@ -104,6 +126,12 @@
         }
         
         self.swipeView.avatarImageView.layer.cornerRadius = 110;
+        
+        UIColor *invertColor = [self invertColor:[self averageColor]];
+        self.swipeView.nameLabel.textColor = invertColor;
+        self.swipeView.ageLabel .textColor = invertColor;
+        
+        self.swipeView.parameterUser = parametersUser;
         
         self.counter++;
         
@@ -137,7 +165,8 @@
 {
     NSLog(@"changeActionAlertView");
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"SettingStoryboard" bundle:[NSBundle mainBundle]];
-    TSSettingsTableViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"SettingStoryboard"];
+    TSSettingsTableViewController *controller =
+    [storyboard instantiateViewControllerWithIdentifier:@"SettingStoryboard"];
     [self.navigationController pushViewController:controller animated:YES];
 }
 
@@ -145,6 +174,58 @@
 - (void)repeatActionAlertView
 {
     NSLog(@"repeatActionAlertView");
+}
+
+
+- (void)rotationViewToClockwise
+{
+
+}
+
+
+#pragma mark - inversion color
+
+
+- (UIColor *)averageColor {
+    
+    UIImage *image = self.swipeView.backgroundImageView.image;
+    struct CGImage *convertImage = image.CGImage;
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    unsigned char rgba[4];
+    CGContextRef context = CGBitmapContextCreate(rgba, 1, 1, 8, 4, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), convertImage);
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    
+    if(rgba[3] > 0)
+    {
+        CGFloat alpha = ((CGFloat)rgba[3])/255.0;
+        CGFloat multiplier = alpha/255.0;
+        return [UIColor colorWithRed:((CGFloat)rgba[0])*multiplier
+                               green:((CGFloat)rgba[1])*multiplier
+                                blue:((CGFloat)rgba[2])*multiplier
+                               alpha:alpha];
+    } else {
+        return [UIColor colorWithRed:((CGFloat)rgba[0])/255.0
+                               green:((CGFloat)rgba[1])/255.0
+                                blue:((CGFloat)rgba[2])/255.0
+                               alpha:((CGFloat)rgba[3])/255.0];
+    }
+}
+
+
+- (UIColor *)invertColor:(UIColor *)color
+{
+    CGFloat red, green, blue, alpha;
+    [color getRed:&red green:&green blue:&blue alpha:&alpha];
+    
+    CGFloat newRed = (1.0f - red);
+    CGFloat newGreen = (1.0f - green);
+    CGFloat newBlue = (1.0f - blue);
+    
+    return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:alpha];
 }
 
 

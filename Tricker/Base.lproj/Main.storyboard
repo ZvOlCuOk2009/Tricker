@@ -195,7 +195,7 @@
                                         </constraints>
                                         <color key="textColor" red="0.51372549020000002" green="0.61960784310000006" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                                     </textField>
                                 </subviews>
                                 <constraints>
@@ -585,7 +585,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="njS-gW-L85" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="eZb-dA-ybm">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="eZb-dA-ybm">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="barTintColor" red="0.9882352941176471" green="0.87450980392156863" blue="0.6588235294117647" alpha="1" colorSpace="calibratedRGB"/>

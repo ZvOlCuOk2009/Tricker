@@ -28,6 +28,8 @@
 @property (strong, nonatomic) NSString *genderSearch;
 @property (strong, nonatomic) NSString *ageSearch;
 
+@property (strong, nonatomic) NSString *notification;
+
 @property (strong, nonatomic) FIRDatabaseReference *ref;
 @property (strong, nonatomic) TSFireUser *fireUser;
 
@@ -39,18 +41,19 @@
     [super viewDidLoad];
     
     self.ref = [[FIRDatabase database] reference];
+    
     [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
         
         self.fireUser = [TSFireUser initWithSnapshot:snapshot];
         self.fireBase = [TSFireBase initWithSnapshot:snapshot];
         
         [self configureController];
+
     }];
     
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
     
 }
-
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -61,7 +64,6 @@
 -(void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [SVProgressHUD dismiss];
 }
 
 
@@ -70,11 +72,6 @@
 
 - (void)configureController
 {
-
-    [SVProgressHUD show];
-    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
-    [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
-    [SVProgressHUD setForegroundColor:DARK_GRAY_COLOR];
     
     self.genderSearch = [self.fireUser.parameters objectForKey:@"key1"];
     self.ageSearch = [self.fireUser.parameters objectForKey:@"key2"];
@@ -100,15 +97,14 @@
         for (NSDictionary *selectedUserTheGender in self.usersFoundOnTheGender) {
             NSDictionary *userData = [selectedUserTheGender objectForKey:@"userData"];
             NSString *age = [userData objectForKey:@"age"];
-            NSString *name = [userData objectForKey:@"displayName"];
-            if ([self computationSearchAge:self.ageSearch receivedAge:age]) {
+            NSString *uid = [userData objectForKey:@"userID"];
+            if ([self computationSearchAge:self.ageSearch receivedAge:age] && ![self.fireUser.uid isEqualToString:uid]) {
                 [self.usersFoundOnGenderAndAge addObject:selectedUserTheGender];
-                NSLog(@"name gender and age %@", name);
             }
         }
     }
     
-    NSLog(@"Gender and count %ld", (long)[self.usersFoundOnGenderAndAge count]);
+    NSLog(@"Gender and age count %ld", (long)[self.usersFoundOnGenderAndAge count]);
     
     [self prepareForSegue];
 }
@@ -149,7 +145,6 @@
             }
         }
     }
-    
 }
 
 

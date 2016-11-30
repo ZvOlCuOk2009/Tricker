@@ -36,6 +36,7 @@
         FIRDataSnapshot *age = fireUser.value[@"age"];
         FIRDataSnapshot *location = fireUser.value[@"location"];
         FIRDataSnapshot *gender = fireUser.value[@"gender"];
+        FIRDataSnapshot *online = fireUser.value[@"online"];
         FIRDataSnapshot *parameters = fireUserParameters.value[@"parameters"];
         
         
@@ -47,6 +48,7 @@
         user.age = (NSString *)age;
         user.location = (NSString *)location;
         user.gender = (NSString *)gender;
+        user.online = (NSString *)online;
         user.parameters = (NSMutableDictionary *)parameters;
         
     }

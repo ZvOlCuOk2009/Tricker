@@ -14,10 +14,18 @@
 @property (weak, nonatomic) IBOutlet UILabel *ageLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
+@property (weak, nonatomic) IBOutlet UIView *onlineView;
 @property (weak, nonatomic) IBOutlet UIButton *nopeButton;
 @property (weak, nonatomic) IBOutlet UIButton *chatButton;
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
 
+@property (strong, nonatomic) NSDictionary *parameterUser;
+
 + (instancetype)initProfileView;
 
+- (IBAction)likeActionButton:(id)sender;
+- (IBAction)parametersActionButton:(id)sender;
+- (IBAction)chatActionButton:(id)sender;
+
 @end
+

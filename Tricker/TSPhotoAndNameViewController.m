@@ -180,10 +180,21 @@
                                          
                                          if (user.uid) {
                                              
+                                             NSString *dateOfBirth = @"";
+                                             NSString *location = @"";
+                                             NSString *gender = @"";
+                                             NSString *age = @"";
+                                             NSString *online = @"";
+                                             
                                              NSDictionary *userData = @{@"userID":user.uid,
                                                                         @"displayName":displayName,
                                                                         @"email":email,
-                                                                        @"photoURL":stringImage};
+                                                                        @"photoURL":stringImage,
+                                                                        @"dateOfBirth":dateOfBirth,
+                                                                        @"location":location,
+                                                                        @"gender":gender,
+                                                                        @"age":age,
+                                                                        @"online":online};
                                              
                                              NSString *token = user.uid;
                                              
