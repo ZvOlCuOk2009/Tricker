@@ -24,9 +24,11 @@
         
         NSString *key = [NSString stringWithFormat:@"dataBase/users/%@/userData", fireUser.uid];
         NSString *keyToParameters = [NSString stringWithFormat:@"dataBase/users/%@", fireUser.uid];
+        NSString *keyToPhotos = [NSString stringWithFormat:@"dataBase/users/%@", fireUser.uid];
         
         FIRDataSnapshot *fireUser = [snapshot childSnapshotForPath:key];
         FIRDataSnapshot *fireUserParameters = [snapshot childSnapshotForPath:keyToParameters];
+        FIRDataSnapshot *fireUserPhotos = [snapshot childSnapshotForPath:keyToPhotos];
         
         FIRDataSnapshot *userIdent = fireUser.value[@"userID"];
         FIRDataSnapshot *userName = fireUser.value[@"displayName"];
@@ -38,6 +40,7 @@
         FIRDataSnapshot *gender = fireUser.value[@"gender"];
         FIRDataSnapshot *online = fireUser.value[@"online"];
         FIRDataSnapshot *parameters = fireUserParameters.value[@"parameters"];
+        FIRDataSnapshot *photos = fireUserPhotos.value[@"photos"];
         
         
         user.uid = (NSString *)userIdent;
@@ -50,6 +53,7 @@
         user.gender = (NSString *)gender;
         user.online = (NSString *)online;
         user.parameters = (NSMutableDictionary *)parameters;
+        user.photos = (NSMutableArray *)photos;
         
     }
     

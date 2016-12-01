@@ -15,14 +15,14 @@
 @import FirebaseAuth;
 @import FirebaseDatabase;
 
-@interface TSPhotoAndNameViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface TSPhotoAndNameViewController ()
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UIButton *cameraButton;
 @property (weak, nonatomic) IBOutlet UIImage *image;
 
 @property (strong, nonatomic) FIRDatabaseReference *ref;
-@property (strong, nonatomic) IBOutlet UIImagePickerController *picker;
+
 
 @end
 
@@ -100,11 +100,11 @@
     alertController.view.tintColor = DARK_GRAY_COLOR;
 
     
-    NSMutableAttributedString *hogan = [[NSMutableAttributedString alloc] initWithString:@"Выберите фото"];
-    [hogan addAttribute:NSFontAttributeName
+    NSMutableAttributedString *mutableAttrString = [[NSMutableAttributedString alloc] initWithString:@"Выберите фото"];
+    [mutableAttrString addAttribute:NSFontAttributeName
                   value:[UIFont systemFontOfSize:20.0]
                   range:NSMakeRange(0, 13)];
-    [alertController setValue:hogan forKey:@"attributedTitle"];
+    [alertController setValue:mutableAttrString forKey:@"attributedTitle"];
     
     [alertController addAction:camera];
     [alertController addAction:galery];
@@ -142,10 +142,10 @@
 }
 
 
-- (void)imagePickerController:(UIImagePickerController *) Picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
     
-    [Picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:nil];
     self.image = [info objectForKey:UIImagePickerControllerEditedImage];
     [self.cameraButton setImage:self.image forState:UIControlStateNormal];
     

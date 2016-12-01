@@ -33,7 +33,7 @@
                                 <rect key="frame" x="20" y="276" width="201" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U3R-ap-3GP">
@@ -88,7 +88,7 @@
                                 <rect key="frame" x="20" y="306" width="28" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ehp-Rm-MVP">
@@ -142,26 +142,9 @@
                 <outlet property="nameLabel" destination="D6R-O5-mJM" id="xTP-a4-OAi"/>
                 <outlet property="nopeButton" destination="U3R-ap-3GP" id="gTl-Mb-6cP"/>
                 <outlet property="onlineView" destination="ehp-Rm-MVP" id="QRC-7A-FTO"/>
-                <outlet property="photoView" destination="g4b-CF-G6g" id="A4X-r4-0xn"/>
                 <outlet property="tableView" destination="oBa-wW-N5j" id="jWt-4g-KYV"/>
             </connections>
             <point key="canvasLocation" x="29" y="143"/>
-        </view>
-        <view contentMode="scaleToFill" id="g4b-CF-G6g" userLabel="PHotoView">
-            <rect key="frame" x="0.0" y="0.0" width="300" height="396"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Photo" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uzI-VB-uW5">
-                    <rect key="frame" x="86" y="174" width="129" height="48"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-            </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="429" y="143"/>
         </view>
     </objects>
 </document>

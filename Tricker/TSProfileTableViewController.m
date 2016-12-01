@@ -433,7 +433,7 @@
     }
 
     
-    if (indexPath.row == 7)
+    if (indexPath.row == 8)
     {
         return kHeightCellButtonSaveAndOut;
     }

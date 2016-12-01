@@ -46,7 +46,6 @@
     [self.tableView setSeparatorColor:DARK_GRAY_COLOR];
     self.placesClient = [[GMSPlacesClient alloc] init];
     
-    
     TSSearchBar *searchBar = [[TSSearchBar alloc] initWithView:self.view];
     self.navigationItem.titleView = searchBar;
     searchBar.autocorrectionType = NO;
