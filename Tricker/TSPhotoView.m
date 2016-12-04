@@ -13,7 +13,7 @@
 @interface TSPhotoView () <UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (strong, nonatomic) UITapGestureRecognizer *tapGestures;
+@property (strong, nonatomic) IBOutlet UIButton *cancelButton;
 @property (strong, nonatomic) UIImageView *zoomImage;
 @property (assign, nonatomic) CGRect prevFrame;
 @property (assign, nonatomic) BOOL zoomPhotoState;
@@ -27,10 +27,28 @@ static NSString * const reuseIdntifier = @"cell";
 
 - (void)drawRect:(CGRect)rect {
     
-    self.tapGestures = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hendler)];
-    self.tapGestures.delegate = self;
+    //добавление кнопки
+    
+    self.cancelButton = [[UIButton alloc]initWithFrame:CGRectMake(265, 9, 20, 20)];
+    [self.cancelButton setImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self action:@selector(cancelPhoto) forControlEvents:UIControlEventTouchUpInside];
+    [self.navigationView addSubview:self.cancelButton];
+    self.cancelButton.hidden = YES;
+    
     self.zoomPhotoState = NO;
 
+    
+    [self.photos removeObjectAtIndex:0];
+    
+    
+    if ([self.photos count] == 0 && self.photos == nil) {
+        UILabel *label = [[UILabel alloc] init];
+        label.frame = CGRectMake(100, 180, 120, 22);
+        label.text = @"Альбом пуст";
+        label.textColor = [UIColor darkGrayColor];
+        label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20.f];
+        [self addSubview:label];
+    }
 }
 
 
@@ -38,6 +56,7 @@ static NSString * const reuseIdntifier = @"cell";
     
     [super awakeFromNib];
     [self.collectionView registerNib:[UINib nibWithNibName:@"TSCollCell" bundle:nil] forCellWithReuseIdentifier:reuseIdntifier];
+    
 }
 
 
@@ -91,7 +110,6 @@ static NSString * const reuseIdntifier = @"cell";
     self.prevFrame = cellFrameInSuperview;
     
     self.zoomImage = [[UIImageView alloc] initWithImage:[self decodingImage:indexPath]];
-    
     self.zoomImage.contentMode = UIViewContentModeScaleAspectFit;
     
     CGRect zoomFrameTo = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
@@ -103,7 +121,9 @@ static NSString * const reuseIdntifier = @"cell";
     
     self.zoomImage.frame = zoomFrameFrom;
     self.zoomImage.alpha = 0.3;
-    [self.zoomImage addGestureRecognizer:self.tapGestures];
+    
+    self.cancelButton.hidden = NO;
+    self.collectionView.userInteractionEnabled = NO;
     
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -129,13 +149,18 @@ static NSString * const reuseIdntifier = @"cell";
 }
 
 
-- (void)hendler
+- (void)cancelPhoto
 {
     [UIView animateWithDuration:0.3
                      animations:^{
-                         self.zoomImage.frame = self.prevFrame;
+                         self.zoomImage.hidden = YES;
+                         self.zoomImage = nil;
                      }];
+    
+    self.cancelButton.hidden = YES;
+    self.collectionView.userInteractionEnabled = YES;
 }
+
 
 
 #pragma mark - UICollectionViewDelegate

@@ -12,6 +12,5 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *parameterLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *iconParameter;
 
 @end

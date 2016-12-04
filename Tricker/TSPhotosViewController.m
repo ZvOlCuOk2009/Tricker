@@ -25,6 +25,7 @@
 @property (strong, nonatomic) NSMutableArray *photos;
 @property (strong, nonatomic) UIImageView *chackMark;
 
+@property (assign, nonatomic) NSInteger regognizerMark;
 @property (assign, nonatomic) BOOL regognizer;
 @property (assign, nonatomic) BOOL mark;
 
@@ -69,6 +70,7 @@ static NSString * const reuseIdntifierButton = @"cellButton";
     self.chackMark = [[UIImageView alloc] initWithImage:chackMarkImage];
     self.chackMark.frame = CGRectMake(50, 50, 25, 25);
     
+    self.regognizerMark = 0;
     self.regognizer = NO;
     self.mark = NO;
 }
@@ -258,13 +260,11 @@ static NSString * const reuseIdntifierButton = @"cellButton";
     if (self.mark == NO) {
         
         [photo addSubview:self.chackMark];
-        
         self.mark = YES;
         
     } else {
         
-        [photo removeFromSuperview];
-        
+        self.chackMark = nil;
         self.mark = NO;
     }
     

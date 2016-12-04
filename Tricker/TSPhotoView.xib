@@ -65,9 +65,18 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="collectionView" destination="UQc-EK-TRq" id="edm-uP-g5a"/>
+                <outlet property="navigationView" destination="zuR-9B-NK0" id="gDs-37-fmU"/>
             </connections>
             <point key="canvasLocation" x="429" y="143"/>
         </view>
+        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Альбом пуст" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="2mg-Eb-zPt">
+            <rect key="frame" x="0.0" y="0.0" width="107" height="22"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
+            <color key="textColor" red="0.51372549020000002" green="0.61960784310000006" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
+            <nil key="highlightedColor"/>
+            <point key="canvasLocation" x="735" y="194"/>
+        </label>
     </objects>
     <resources>
         <image name="arrow_bottom" width="20" height="20"/>

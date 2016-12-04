@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TSFireUser.h"
+#import "TSFireBase.h"
 
 @import Firebase;
 @import FirebaseAuth;
@@ -20,6 +21,7 @@
 @property (strong, nonatomic) UIBarButtonItem *doneButton;
 @property (strong, nonatomic) FIRDatabaseReference *ref;
 @property (strong, nonatomic) TSFireUser *fireUser;
+@property (strong, nonatomic) TSFireBase *fireBase;
 
 - (void)doneAction:(id)sender;
 

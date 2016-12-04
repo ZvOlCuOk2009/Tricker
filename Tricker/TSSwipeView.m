@@ -36,11 +36,20 @@
     
     //[self awakeFromNib];
     
-    self.dataSource = @[@"Ищу", @"Возраст", @"С целью", @"Рост", @"Вес", @"Фигура", @"Глаза", @"Волосы", @"Отношения", @"Дети", @"Доход", @"Образование", @"Жильё", @"Автомобиль", @"Курение", @"Алкоголь"];
+    self.dataSource = @[@"Ищу", @"Возраст", @"С целью", @"Рост", @"Вес", @"Фигура", @"Глаза", @"Волосы", @"Отношения", @"Дети", @"Доход", @"Образование", @"Жильё", @"Автомобиль", @"Отношение к курению", @"Алкоголь"];
     self.counter = 0;
     
     self.updateDataSource = [NSMutableArray array];
     self.getParameters = [NSMutableArray array];
+    
+    NSMutableArray *tempArrayDataSource = [NSMutableArray array];
+    NSMutableArray *tempArrayGetParameters = [NSMutableArray array];
+    
+    for (int i = 0; i < 16; i++) {
+        NSString *cap = @"";
+        [tempArrayDataSource addObject:cap];
+        [tempArrayGetParameters addObject:cap];
+    }
     
     self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                               action:@selector(handleSingleTap:)];
@@ -54,8 +63,8 @@
     
     //наполнение массивов заголовками и данными
     
-    [self.updateDataSource addObject:@"Анкета"];
-    [self.getParameters addObject:@""];
+    [tempArrayDataSource insertObject:@"Анкета" atIndex:0];
+    [tempArrayGetParameters addObject:@""];
     
     for (int i = 0; i < [self.parameterUser count]; i++) {
         
@@ -72,19 +81,35 @@
         } else if ([parameter isEqualToString:@"man woman"]) {
             parameter = @"Парня и девушку";
         }
-
         
-        //добавление тайтлов и параметров в массивы по пордковым номерам
+        //добавление тайтлов и параметров в промежуточные массивы
         
-//        NSString *title = [self.dataSource objectAtIndex:index - 1];
+        NSString *title = [self.dataSource objectAtIndex:index - 1];
         
-//        [self.getParameters insertObject:parameter atIndex:index];
-//        [self.updateDataSource insertObject:title atIndex:index];
+        [tempArrayDataSource insertObject:title atIndex:index];
+        [tempArrayGetParameters insertObject:parameter atIndex:index];
         
-        [self.getParameters addObject:parameter];        
-        [self.updateDataSource addObject:[self.dataSource objectAtIndex:index - 1]];
     }
 
+    //добавление тайтлов и параметров в массивы по пордковым номера
+    
+    NSInteger counterDSArray = 0;
+    NSInteger counterParamArray = 0;
+    
+    for (NSString *title in tempArrayDataSource) {
+        if (![title isEqualToString:@""]) {
+            [self.updateDataSource addObject:title];
+        }
+        counterDSArray++;
+    }
+    
+    for (NSString *parameter in tempArrayGetParameters) {
+        if (![parameter isEqualToString:@""] || counterParamArray == 0) {
+            [self.getParameters addObject:parameter];
+        }
+        counterParamArray++;
+    }
+    
 }
 
 

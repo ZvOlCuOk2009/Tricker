@@ -60,8 +60,14 @@
     [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
         
         self.fireUser = [TSFireUser initWithSnapshot:snapshot];
-        
         [self configureController];
+        
+    }];
+    
+    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
+        
+        NSDictionary *gictionary = [TSFireBase initWithSnapshot:snapshot];
+        NSLog(@"gictionary %@", gictionary.description);
         
     }];
     

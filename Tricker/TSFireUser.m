@@ -22,11 +22,11 @@
     if(token)
     {
         
-        NSString *key = [NSString stringWithFormat:@"dataBase/users/%@/userData", fireUser.uid];
+        NSString *keyUserData = [NSString stringWithFormat:@"dataBase/users/%@/userData", fireUser.uid];
         NSString *keyToParameters = [NSString stringWithFormat:@"dataBase/users/%@", fireUser.uid];
         NSString *keyToPhotos = [NSString stringWithFormat:@"dataBase/users/%@", fireUser.uid];
         
-        FIRDataSnapshot *fireUser = [snapshot childSnapshotForPath:key];
+        FIRDataSnapshot *fireUser = [snapshot childSnapshotForPath:keyUserData];
         FIRDataSnapshot *fireUserParameters = [snapshot childSnapshotForPath:keyToParameters];
         FIRDataSnapshot *fireUserPhotos = [snapshot childSnapshotForPath:keyToPhotos];
         

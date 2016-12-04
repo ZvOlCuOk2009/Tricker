@@ -11,6 +11,8 @@
 @interface TSPhotoView : UIView
 
 @property (strong, nonatomic) NSMutableArray *photos;
+@property (strong, nonatomic) IBOutlet UIView *navigationView;
+@property (strong, nonatomic) IBOutlet UILabel *labelNoPhoto;
 @property (assign, nonatomic) BOOL isCellSelected;
 
 - (IBAction)cancelPhotoViewAction:(id)sender;
