@@ -35,6 +35,8 @@
 		FDBDDDDF1DDB8745008EE73E /* TSSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDBDDDDE1DDB8745008EE73E /* TSSettingsTableViewController.m */; };
 		FDE927391DE840EC00FF884F /* TSFireBase.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE927381DE840EC00FF884F /* TSFireBase.m */; };
 		FDE9273C1DE8EC4600FF884F /* TSIntermediateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDE9273B1DE8EC4600FF884F /* TSIntermediateViewController.m */; };
+		FDEBE3E81DF1C4AB0073A0FF /* TSCollCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDEBE3E71DF1C4AB0073A0FF /* TSCollCell.xib */; };
+		FDEBE3F11DF1C7F40073A0FF /* TSCollCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEBE3F01DF1C7F40073A0FF /* TSCollCell.m */; };
 		FDEF72631DD65CAB00CAF773 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEF72621DD65CAA00CAF773 /* CoreLocation.framework */; };
 		FDF4BB121DF019D4003D3841 /* TSViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDF4BB111DF019D4003D3841 /* TSViewCell.xib */; };
 		FDF4BB181DF01FB7003D3841 /* TSViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FDF4BB171DF01FB7003D3841 /* TSViewCell.m */; };
@@ -119,6 +121,9 @@
 		FDE927381DE840EC00FF884F /* TSFireBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSFireBase.m; sourceTree = "<group>"; };
 		FDE9273A1DE8EC4600FF884F /* TSIntermediateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSIntermediateViewController.h; sourceTree = "<group>"; };
 		FDE9273B1DE8EC4600FF884F /* TSIntermediateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSIntermediateViewController.m; sourceTree = "<group>"; };
+		FDEBE3E71DF1C4AB0073A0FF /* TSCollCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TSCollCell.xib; sourceTree = "<group>"; };
+		FDEBE3EF1DF1C7F40073A0FF /* TSCollCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSCollCell.h; sourceTree = "<group>"; };
+		FDEBE3F01DF1C7F40073A0FF /* TSCollCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSCollCell.m; sourceTree = "<group>"; };
 		FDEF72621DD65CAA00CAF773 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		FDF4BB111DF019D4003D3841 /* TSViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TSViewCell.xib; sourceTree = "<group>"; };
 		FDF4BB161DF01FB7003D3841 /* TSViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSViewCell.h; sourceTree = "<group>"; };
@@ -223,15 +228,18 @@
 				FD0C1C9F1DE783B500D37B61 /* TSSwipeView.xib */,
 				FD0C1CA11DE78B9B00D37B61 /* TSSwipeView.h */,
 				FD0C1CA21DE78B9B00D37B61 /* TSSwipeView.m */,
-				FDFF9D821DEA251E00F4971B /* TSAlertViewCard.xib */,
-				FDFF9D841DEA277500F4971B /* TSAlertViewCard.h */,
-				FDFF9D851DEA277500F4971B /* TSAlertViewCard.m */,
 				FDF4BB111DF019D4003D3841 /* TSViewCell.xib */,
 				FDF4BB161DF01FB7003D3841 /* TSViewCell.h */,
 				FDF4BB171DF01FB7003D3841 /* TSViewCell.m */,
 				FDF4BB191DF02C3E003D3841 /* TSPhotoView.xib */,
 				FDF4BB1B1DF02DB1003D3841 /* TSPhotoView.h */,
 				FDF4BB1C1DF02DB1003D3841 /* TSPhotoView.m */,
+				FDEBE3E71DF1C4AB0073A0FF /* TSCollCell.xib */,
+				FDEBE3EF1DF1C7F40073A0FF /* TSCollCell.h */,
+				FDEBE3F01DF1C7F40073A0FF /* TSCollCell.m */,
+				FDFF9D821DEA251E00F4971B /* TSAlertViewCard.xib */,
+				FDFF9D841DEA277500F4971B /* TSAlertViewCard.h */,
+				FDFF9D851DEA277500F4971B /* TSAlertViewCard.m */,
 			);
 			name = Xib;
 			sourceTree = "<group>";
@@ -502,6 +510,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDEBE3E81DF1C4AB0073A0FF /* TSCollCell.xib in Resources */,
 				FD68B4611DDA7D0C00EF19C3 /* SettingStoryboard.storyboard in Resources */,
 				FD68B45B1DDA7CC100EF19C3 /* MapStoryboard.storyboard in Resources */,
 				FDF4BB1A1DF02C3E003D3841 /* TSPhotoView.xib in Resources */,
@@ -601,6 +610,7 @@
 				FD45D0851DD7CF4200EB2640 /* TSTableViewCell.m in Sources */,
 				FDF9639C1DD14598000877B5 /* TSPhotoAndNameViewController.m in Sources */,
 				FDFDFC951DD26A28007811EF /* TSAutorizationViewController.m in Sources */,
+				FDEBE3F11DF1C7F40073A0FF /* TSCollCell.m in Sources */,
 				FD0C1C9D1DE7810000D37B61 /* TSCardsViewController.m in Sources */,
 				FDF4BB241DF076B2003D3841 /* TSCollectionViewCell.m in Sources */,
 				FDE927391DE840EC00FF884F /* TSFireBase.m in Sources */,

@@ -23,8 +23,10 @@
 @property (strong, nonatomic) TSFireUser *fireUser;
 
 @property (strong, nonatomic) NSMutableArray *photos;
+@property (strong, nonatomic) UIImageView *chackMark;
 
 @property (assign, nonatomic) BOOL regognizer;
+@property (assign, nonatomic) BOOL mark;
 
 @end
 
@@ -55,7 +57,27 @@ static NSString * const reuseIdntifierButton = @"cellButton";
         [self.collectionView reloadData];
     }];
 
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] init];
+    [leftItem setImage:[UIImage imageNamed:@"back"]];
+    [leftItem setTintColor:DARK_GRAY_COLOR];
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    [leftItem setTarget:self];
+    [leftItem setAction:@selector(cancelInteraction)];
+    
+    UIImage *chackMarkImage = [UIImage imageNamed:@"check-mark"];
+    self.chackMark = [[UIImageView alloc] initWithImage:chackMarkImage];
+    self.chackMark.frame = CGRectMake(50, 50, 25, 25);
+    
     self.regognizer = NO;
+    self.mark = NO;
+}
+
+
+- (void)cancelInteraction
+{
+    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0]
+                                          animated:YES];
 }
 
 
@@ -63,11 +85,15 @@ static NSString * const reuseIdntifierButton = @"cellButton";
 {
     [super willMoveToParentViewController:parent];
     
-    if (!parent && self.regognizer == YES) {
-        
-        [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid] child:@"photos"] setValue:self.photos];
+    if (!parent) {
+        if (self.regognizer == YES) {
+            [[[[[self.ref child:@"dataBase"] child:@"users"] child:self.fireUser.uid] child:@"photos"] setValue:self.photos];
+        }
     }
 }
+
+
+#pragma mark - Action
 
 
 - (IBAction)addPhotoActionButton:(id)sender
@@ -169,6 +195,9 @@ static NSString * const reuseIdntifierButton = @"cellButton";
 }
 
 
+#pragma mark - UICollectionViewDataSource
+
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     return self.photos.count;
@@ -200,18 +229,47 @@ static NSString * const reuseIdntifierButton = @"cellButton";
 }
 
 
+#pragma mark - UICollectionViewDelegate
+
+
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
     return 1;
 }
 
 
-//- (CGSize)collectionView:(UICollectionView *)collectionView
-//                  layout:(UICollectionViewLayout *)collectionViewLayout
-//  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    return CGSizeMake(79, 79);
-//}
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(79, 79);
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    TSCollectionViewCell *cell = (TSCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    
+    NSArray *object = [cell subviews];
+    
+    UIImageView *photo = [object firstObject];
+    
+    if (self.mark == NO) {
+        
+        [photo addSubview:self.chackMark];
+        
+        self.mark = YES;
+        
+    } else {
+        
+        [photo removeFromSuperview];
+        
+        self.mark = NO;
+    }
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

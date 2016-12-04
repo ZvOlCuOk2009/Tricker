@@ -10,6 +10,9 @@
 
 @interface TSPhotoView : UIView
 
+@property (strong, nonatomic) NSMutableArray *photos;
+@property (assign, nonatomic) BOOL isCellSelected;
+
 - (IBAction)cancelPhotoViewAction:(id)sender;
 
 @end

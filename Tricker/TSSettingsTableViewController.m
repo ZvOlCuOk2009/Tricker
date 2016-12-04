@@ -160,6 +160,7 @@ NSString * const UpdateParametersNotification = @"UpdateParametersNotification";
     self.navigationController.navigationBar.tintColor = DARK_GRAY_COLOR;
     
     //создание массива лейблов
+    
     self.labels = @[self.minAgeUnknownPeopleLabel, self.maxAgeUnknownPeopleLabel, self.growthLabel, self.weightLabel, self.targetLabel, self.figureLabel, self.eyesLabel, self.hairLabel, self.relationsLabel, self.childsLabel, self.earningsLabel, self.educationLabel, self.housingLabel, self.automobileLabel, self.smokingLabel, self.alcoholeLabel];
         
     self.checked = [UIImage imageNamed:@"checked"];
@@ -567,7 +568,6 @@ NSString * const UpdateParametersNotification = @"UpdateParametersNotification";
         } else {
             
             [self.characteristicsUser removeObjectForKey:key];
-
         }
     }
 }

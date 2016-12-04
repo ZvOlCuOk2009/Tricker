@@ -429,7 +429,14 @@
                             <outlet property="delegate" destination="v8L-TM-BDS" id="XoN-H0-3jj"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="0tB-EK-Au8"/>
+                    <navigationItem key="navigationItem" id="0tB-EK-Au8">
+                        <barButtonItem key="leftBarButtonItem" image="photo-camera-avatar" id="efm-fJ-m61">
+                            <color key="tintColor" red="0.51372549020000002" green="0.61960784310000006" blue="0.69803921570000005" alpha="1" colorSpace="calibratedRGB"/>
+                            <connections>
+                                <action selector="changeAvatarActionButton:" destination="v8L-TM-BDS" id="0ag-UO-iva"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="avatarImageView" destination="WQV-oK-Bxh" id="dzr-hn-XQV"/>
                         <outlet property="backgroundImageView" destination="QzR-tx-2VJ" id="Ak3-Qz-GAh"/>
@@ -650,7 +657,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="duB-X3-2xG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1839" y="958"/>
+            <point key="canvasLocation" x="1540" y="958"/>
         </scene>
     </scenes>
     <resources>
@@ -659,6 +666,7 @@
         <image name="next_cell" width="20" height="20"/>
         <image name="no_click" width="40" height="40"/>
         <image name="pencil" width="20" height="20"/>
+        <image name="photo-camera-avatar" width="25" height="25"/>
         <image name="photo-camera1" width="40" height="40"/>
         <image name="user_click" width="26" height="26"/>
         <image name="user_no" width="26" height="26"/>

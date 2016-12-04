@@ -55,10 +55,14 @@
     //наполнение массивов заголовками и данными
     
     [self.updateDataSource addObject:@"Анкета"];
+    [self.getParameters addObject:@""];
     
     for (int i = 0; i < [self.parameterUser count]; i++) {
         
         NSString *key = [self.allKeys objectAtIndex:i];
+        NSString *shortKey = [key substringFromIndex:3];
+        NSInteger index = [shortKey integerValue];
+        
         NSString *parameter = [self.parameterUser objectForKey:key];
         
         if ([parameter isEqualToString:@"man"]) {
@@ -68,15 +72,19 @@
         } else if ([parameter isEqualToString:@"man woman"]) {
             parameter = @"Парня и девушку";
         }
+
         
-        [self.getParameters addObject:parameter];
+        //добавление тайтлов и параметров в массивы по пордковым номерам
         
-        NSString *shortKey = [key substringFromIndex:3];
-        NSInteger index = [shortKey integerValue];
+//        NSString *title = [self.dataSource objectAtIndex:index - 1];
+        
+//        [self.getParameters insertObject:parameter atIndex:index];
+//        [self.updateDataSource insertObject:title atIndex:index];
+        
+        [self.getParameters addObject:parameter];        
         [self.updateDataSource addObject:[self.dataSource objectAtIndex:index - 1]];
     }
-    
-    [self setup];
+
 }
 
 
@@ -137,16 +145,11 @@
     [self.photoView setFrame:CGRectMake(0.0f, 0.0f, self.photoView.frame.size.width, self.photoView.frame.size.height)];
     [UIView commitAnimations];
 
+    self.photoView.photos = self.photos;
 }
 
 
 - (IBAction)chatActionButton:(id)sender
-{
-    
-}
-
-
-- (void)cancelPhotoView
 {
     
 }
@@ -215,15 +218,17 @@
         cell = [[[NSBundle mainBundle] loadNibNamed:@"TSViewCell" owner:self options:nil] firstObject];
     }
     
-    cell.titleLabel.text = [NSString stringWithFormat:@"%@", [self.updateDataSource objectAtIndex:indexPath.row]];
+    NSInteger index = indexPath.row;
+    NSString *title = [self.updateDataSource objectAtIndex:index];
+    cell.titleLabel.text = [NSString stringWithFormat:@"%@", title];
     
     if (indexPath.row == 0) {
         cell.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20.f];
         cell.parameterLabel.text = @"";
     } else {
         
-        NSInteger index = indexPath.row;
-        cell.parameterLabel.text = [NSString stringWithFormat:@"%@", [self.getParameters objectAtIndex:index - 1]];
+        NSString *parameter = [self.getParameters objectAtIndex:index];
+        cell.parameterLabel.text = [NSString stringWithFormat:@"%@", parameter];
     }
     
     return cell;
@@ -236,7 +241,15 @@
     
     if (indexPath.row == 0) {
         
+        self.photoView = [[[NSBundle mainBundle] loadNibNamed:@"TSPhotoView" owner:self options:nil] firstObject];
+        
         [self addSubview:self.photoView];
+        [self.photoView setFrame:CGRectMake(0.0f, self.photoView.frame.size.height,
+                                            self.photoView.frame.size.width, self.photoView.frame.size.height)];
+        [UIView beginAnimations:@"animateView" context:nil];
+        [UIView setAnimationDuration:0.3];
+        [self.photoView setFrame:CGRectMake(0.0f, 0.0f, self.photoView.frame.size.width, self.photoView.frame.size.height)];
+        [UIView commitAnimations];
     }
 }
 

@@ -8,24 +8,149 @@
 
 #import "TSPhotoView.h"
 #import "TSSwipeView.h"
+#import "TSCollCell.h"
+
+@interface TSPhotoView () <UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate>
+
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) UITapGestureRecognizer *tapGestures;
+@property (strong, nonatomic) UIImageView *zoomImage;
+@property (assign, nonatomic) CGRect prevFrame;
+@property (assign, nonatomic) BOOL zoomPhotoState;
+
+@end
+
+static NSString * const reuseIdntifier = @"cell";
 
 @implementation TSPhotoView
 
 
 - (void)drawRect:(CGRect)rect {
+    
+    self.tapGestures = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hendler)];
+    self.tapGestures.delegate = self;
+    self.zoomPhotoState = NO;
 
+}
+
+
+- (void) awakeFromNib {
+    
+    [super awakeFromNib];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"TSCollCell" bundle:nil] forCellWithReuseIdentifier:reuseIdntifier];
 }
 
 
 - (IBAction)cancelPhotoViewAction:(id)sender
 {
-//    [self addSubview:self.photoView];
     [self setFrame:CGRectMake(0.0f, 0.0f, self.frame.size.width, self.frame.size.height)];
     [UIView beginAnimations:@"animateView" context:nil];
     [UIView setAnimationDuration:0.3];
-    [self setFrame:CGRectMake(0.0f, self.frame.size.height,
-                              self.frame.size.width, self.frame.size.height)];
+    [self setFrame:CGRectMake(0.0f, self.frame.size.height, self.frame.size.width, self.frame.size.height)];
     [UIView commitAnimations];
+}
+
+
+#pragma mark - UICollectionViewDataSource
+
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.photos.count;
+}
+
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    TSCollCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdntifier
+                                                                           forIndexPath:indexPath];
+    
+    cell.imageView.image = [self decodingImage:indexPath];
+    
+    return cell;
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    [collectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredVertically];
+    [self zoomToSelectedImage:indexPath];
+
+}
+
+
+- (void)zoomToSelectedImage:(NSIndexPath *)indexPath
+{
+    
+    UICollectionViewLayoutAttributes * theAttributes =
+    [self.collectionView layoutAttributesForItemAtIndexPath:indexPath];
+    
+    CGRect cellFrameInSuperview =
+    [self.collectionView convertRect:theAttributes.frame toView:[self.collectionView superview]];
+    self.prevFrame = cellFrameInSuperview;
+    
+    self.zoomImage = [[UIImageView alloc] initWithImage:[self decodingImage:indexPath]];
+    
+    self.zoomImage.contentMode = UIViewContentModeScaleAspectFit;
+    
+    CGRect zoomFrameTo = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    UICollectionView *collectionView = (UICollectionView *)[self viewWithTag:66];
+    
+    UICollectionViewCell *cellToZoom = (UICollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    CGRect zoomFrameFrom = cellToZoom.frame;
+    [self addSubview:self.zoomImage];
+    
+    self.zoomImage.frame = zoomFrameFrom;
+    self.zoomImage.alpha = 0.3;
+    [self.zoomImage addGestureRecognizer:self.tapGestures];
+    
+    [UIView animateWithDuration:0.3
+                     animations:^{
+        
+        self.zoomImage.frame = zoomFrameTo;
+        self.zoomImage.alpha = 1;
+        
+    } completion:nil];
+    
+}
+
+
+//раскодирование изображение
+
+
+- (UIImage *)decodingImage:(NSIndexPath *)indexPath
+{
+    NSString *photo = [self.photos objectAtIndex:indexPath.item];
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:photo
+                                                       options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    UIImage *convertImage = [UIImage imageWithData:data];
+    return convertImage;
+}
+
+
+- (void)hendler
+{
+    [UIView animateWithDuration:0.3
+                     animations:^{
+                         self.zoomImage.frame = self.prevFrame;
+                     }];
+}
+
+
+#pragma mark - UICollectionViewDelegate
+
+
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
+{
+    return 1;
+}
+
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(74, 74);
 }
 
 

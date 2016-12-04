@@ -15,7 +15,7 @@
 @import FirebaseAuth;
 @import FirebaseDatabase;
 
-@interface TSPhotoAndNameViewController ()
+@interface TSPhotoAndNameViewController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *nameTextField;
 @property (weak, nonatomic) IBOutlet UIButton *cameraButton;
@@ -45,12 +45,13 @@
     
     self.ref = [[FIRDatabase database] reference];
     
-    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] init];
-    [leftItem setImage:[UIImage imageNamed:@"back"]];
-    [leftItem setTintColor:DARK_GRAY_COLOR];
-    self.navigationItem.leftBarButtonItem = leftItem;
-    [leftItem setTarget:self];
-    [leftItem setAction:@selector(cancelInteraction)];
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    [backItem setImage:[UIImage imageNamed:@"back"]];
+    [backItem setTintColor:DARK_GRAY_COLOR];
+    self.navigationItem.leftBarButtonItem = backItem;
+    
+    [backItem setTarget:self];
+    [backItem setAction:@selector(cancelInteraction)];
     
     self.cameraButton.layer.cornerRadius = 65;
     self.cameraButton.clipsToBounds = YES;
@@ -137,7 +138,6 @@
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
     [self presentViewController:picker animated:YES completion:NULL];
-    
     
 }
 

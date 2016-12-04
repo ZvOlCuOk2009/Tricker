@@ -15,7 +15,7 @@
 
 #import <SVProgressHUD.h>
 
-@interface TSProfileTableViewController ()
+@interface TSProfileTableViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
@@ -42,11 +42,11 @@
 
 @property (strong, nonatomic) NSString *positionButtonGender;
 
-@property (assign, nonatomic) BOOL stateDatePicker;
 @property (assign, nonatomic) NSInteger heightHeader;
 @property (assign, nonatomic) CGFloat fixSide;
 @property (assign, nonatomic) CGFloat fixOffset;
 @property (assign, nonatomic) CGFloat fixCornerRadius;
+@property (assign, nonatomic) BOOL stateDatePicker;
 
 @end
 
@@ -200,10 +200,6 @@
                                         nil] forState:UIControlStateNormal];
     
     self.navigationController.navigationBar.tintColor = DARK_GRAY_COLOR;
-
-    
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
-    [self.userDefaults setObject:self.fireUser.displayName forKey:@"displayName"];
     
     self.stateDatePicker = NO;
     
@@ -237,8 +233,8 @@
     }
     
     if (fireUser.age) {
-        self.nameLabel.text = [NSString stringWithFormat:@"%@, %@", fireUser.displayName, fireUser.age];
-        self.textFieldName.placeholder = [NSString stringWithFormat:@"%@, %@", fireUser.displayName, fireUser.age];
+        self.nameLabel.text = [NSString stringWithFormat:@"%@ %@", fireUser.displayName, fireUser.age];
+        self.textFieldName.placeholder = [NSString stringWithFormat:@"%@ %@", fireUser.displayName, fireUser.age];
     } else {
         self.nameLabel.text = fireUser.displayName;
         self.textFieldName.placeholder = fireUser.displayName;
@@ -291,6 +287,102 @@
     
 }
 
+- (IBAction)changeAvatarActionButton:(id)sender
+{
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Выберите фото"
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *camera = [UIAlertAction actionWithTitle:@"Камера"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                       [self makePhoto];
+                                                   }];
+    
+    UIAlertAction *galery = [UIAlertAction actionWithTitle:@"Галерея"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                       [self selectPhoto];
+                                                   }];
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Отменить"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                       
+                                                   }];
+    
+    UIView *subview = alertController.view.subviews.firstObject;
+    UIView *alertContentView = subview.subviews.firstObject;
+    alertContentView.backgroundColor = YELLOW_COLOR;
+    alertContentView.layer.cornerRadius = 10;
+    alertController.view.tintColor = DARK_GRAY_COLOR;
+    
+    
+    NSMutableAttributedString *mutableAttrString = [[NSMutableAttributedString alloc] initWithString:@"Выберите фото"];
+    [mutableAttrString addAttribute:NSFontAttributeName
+                              value:[UIFont fontWithName:@"HelveticaNeue-Light" size:20.f]
+                              range:NSMakeRange(0, 13)];
+    [alertController setValue:mutableAttrString forKey:@"attributedTitle"];
+    
+    [alertController addAction:camera];
+    [alertController addAction:galery];
+    [alertController addAction:cancel];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+    
+}
+
+
+- (void)makePhoto {
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.navigationBar.barStyle = UIBarStyleBlack;
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+}
+
+
+- (void)selectPhoto {
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.navigationBar.barStyle = UIBarStyleBlack;
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+    
+    
+}
+
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
+    
+    //сжатие и добавление в массив фото
+    
+    CGSize newSize = CGSizeMake(300, 300);
+    
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    NSData *dataImage = UIImagePNGRepresentation(newImage);
+    NSString *stringImage = [dataImage base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+    
+    [self updateDataUser:stringImage];
+    
+}
+
 
 //сохранение основных данных
 
@@ -298,24 +390,31 @@
 - (IBAction)saveUserAtionButton:(id)sender
 {
  
-    __block NSString *userID = nil;
-    __block NSString *name = nil;
-    __block NSString *photoURL = nil;
-    __block NSString *email = nil;
-    __block NSString *online = nil;
+    [self updateDataUser:nil];
+    
+}
+
+
+- (void)updateDataUser:(NSString *)photo
+{
+    
+    NSString *userID = nil;
+    NSString *name = nil;
+    NSString *photoURL = nil;
+    NSString *email = nil;
+    NSString *online = nil;
     
     NSString *gender = nil;
     NSString *dateOfBirth = nil;
     NSString *age = nil;
     NSString *location = nil;
-
+    
     
     userID = self.fireUser.uid;
     name = self.fireUser.displayName;
-    photoURL = self.fireUser.photoURL;
+    
     email = self.fireUser.email;
     online = self.fireUser.online;
-        
     
     
     if ([self.textFieldName.text length] > 0) {
@@ -324,12 +423,17 @@
         name = self.fireUser.displayName;
     }
     
+    if (photo) {
+        photoURL = photo; 
+    } else {
+        photoURL = self.fireUser.photoURL;
+    }
+    
     if (self.positionButtonGender) {
         gender = self.positionButtonGender;
     } else {
         gender = self.fireUser.gender;
     }
-    
     
     if (self.selectData) {
         dateOfBirth = self.selectData;
@@ -361,7 +465,7 @@
         location = @"";
     }
     
-
+    
     [SVProgressHUD show];
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleCustom];
     [SVProgressHUD setBackgroundColor:YELLOW_COLOR];
@@ -518,6 +622,7 @@
 
 - (void)doneAction:(id)sender
 {
+    
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     CGRect endFrame = self.datePicker.frame;
     endFrame.origin.y = screenRect.origin.y + screenRect.size.height;

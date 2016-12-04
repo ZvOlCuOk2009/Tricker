@@ -31,6 +31,20 @@
     
     [self configureController];
     
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    [backItem setImage:[UIImage imageNamed:@"back"]];
+    [backItem setTintColor:DARK_GRAY_COLOR];
+    self.navigationItem.leftBarButtonItem = backItem;
+    
+    [backItem setTarget:self];
+    [backItem setAction:@selector(cancelInteraction)];
+}
+
+
+- (void)cancelInteraction
+{
+    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:0]
+                                          animated:YES];
 }
 
 

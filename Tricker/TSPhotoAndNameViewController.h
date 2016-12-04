@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TSPhotoAndNameViewController : UIViewController  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface TSPhotoAndNameViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (strong, nonatomic) NSString *email;
 @property (strong, nonatomic) NSString *password;

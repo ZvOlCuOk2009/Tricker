@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *likeButton;
 
 @property (strong, nonatomic) NSDictionary *parameterUser;
+@property (strong, nonatomic) NSMutableArray *photos;
 
 + (instancetype)initProfileView;
 
