@@ -69,7 +69,7 @@
     [GIDSignIn sharedInstance].delegate = self;
     
     self.ref = [[FIRDatabase database] reference];
-    
+        
     return YES;
 }
 

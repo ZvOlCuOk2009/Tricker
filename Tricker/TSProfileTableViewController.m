@@ -56,18 +56,11 @@
     [super viewDidLoad];
     
     self.ref = [[FIRDatabase database] reference];
-    
+        
     [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
         
         self.fireUser = [TSFireUser initWithSnapshot:snapshot];
         [self configureController];
-        
-    }];
-    
-    [self.ref observeEventType:FIRDataEventTypeValue withBlock:^(FIRDataSnapshot * _Nonnull snapshot) {
-        
-        NSDictionary *gictionary = [TSFireBase initWithSnapshot:snapshot];
-        NSLog(@"gictionary %@", gictionary.description);
         
     }];
     
@@ -418,10 +411,9 @@
     
     userID = self.fireUser.uid;
     name = self.fireUser.displayName;
-    
     email = self.fireUser.email;
     online = self.fireUser.online;
-    
+    age = self.fireUser.age;
     
     if ([self.textFieldName.text length] > 0) {
         name = self.textFieldName.text;

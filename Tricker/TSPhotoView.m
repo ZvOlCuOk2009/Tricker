@@ -36,14 +36,10 @@ static NSString * const reuseIdntifier = @"cell";
     self.cancelButton.hidden = YES;
     
     self.zoomPhotoState = NO;
-
-    
-    [self.photos removeObjectAtIndex:0];
-    
     
     if ([self.photos count] == 0 && self.photos == nil) {
         UILabel *label = [[UILabel alloc] init];
-        label.frame = CGRectMake(100, 180, 120, 22);
+        label.frame = CGRectMake((self.frame.size.width / 2) - 60, (self.frame.size.height / 2) - 11, 120, 22);
         label.text = @"Альбом пуст";
         label.textColor = [UIColor darkGrayColor];
         label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:20.f];

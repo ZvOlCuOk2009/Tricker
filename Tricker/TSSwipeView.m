@@ -57,6 +57,7 @@
     self.tapGesture.enabled = NO;
     [self addGestureRecognizer:self.tapGesture];
     
+    self.tableView.allowsSelection = NO;
     [self.tableView setShowsVerticalScrollIndicator:NO];
     
     self.allKeys = [self.parameterUser allKeys];
@@ -185,8 +186,8 @@
 - (IBAction)parametersActionButton:(id)sender
 {
     
-    self.backgroundTableView.hidden = NO;
-    self.tableView.hidden = NO;
+//    self.backgroundTableView.hidden = NO;
+    //self.tableView.hidden = NO;
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -200,6 +201,12 @@
     
     [self.tableView reloadData];
     
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         self.backgroundTableView.alpha = 1;
+                         self.tableView.alpha = 1;
+                     }];
+    
     self.tapGesture.enabled = YES;
     
 }
@@ -210,8 +217,8 @@
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer
 {
     
-    self.backgroundTableView.hidden = YES;
-    self.tableView.hidden = YES;
+//    self.backgroundTableView.hidden = YES;
+//    self.tableView.hidden = YES;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     [UIView beginAnimations:nil context:context];
@@ -219,6 +226,13 @@
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDuration:0.5];
     [UIView commitAnimations];
+    
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         self.backgroundTableView.alpha = 0;
+                         self.tableView.alpha = 0;
+                         
+                     }];
     
     self.tapGesture.enabled = NO;
     
@@ -263,19 +277,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    if (indexPath.row == 0) {
-        
-        self.photoView = [[[NSBundle mainBundle] loadNibNamed:@"TSPhotoView" owner:self options:nil] firstObject];
-        
-        [self addSubview:self.photoView];
-        [self.photoView setFrame:CGRectMake(0.0f, self.photoView.frame.size.height,
-                                            self.photoView.frame.size.width, self.photoView.frame.size.height)];
-        [UIView beginAnimations:@"animateView" context:nil];
-        [UIView setAnimationDuration:0.3];
-        [self.photoView setFrame:CGRectMake(0.0f, 0.0f, self.photoView.frame.size.width, self.photoView.frame.size.height)];
-        [UIView commitAnimations];
-    }
 }
 
 

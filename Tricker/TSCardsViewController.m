@@ -20,7 +20,7 @@
 @property (strong, nonatomic) ZLSwipeableView *swipeableView;
 @property (weak, nonatomic) TSSwipeView *swipeView;
 
-@property (assign, nonatomic) NSInteger counter;
+@property (assign, nonatomic) NSInteger counterIndexPath;
 
 @end
 
@@ -51,7 +51,7 @@
     [self.swipeableView discardAllViews];
     [self.swipeableView loadViewsIfNeeded];
     
-    self.counter = 0;
+    self.counterIndexPath = 0;
     
 }
 
@@ -77,7 +77,7 @@
 - (UIView *)nextViewForSwipeableView:(ZLSwipeableView *)swipeableView
 {
     
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.counter inSection:0];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.counterIndexPath inSection:0];
     
     if (self.selectedUsers.count > 0) {
         
@@ -126,14 +126,20 @@
             self.swipeView.avatarImageView.image = convertImage;
         }
         
+        NSString *firstString = [photosUser firstObject];
+        if ([firstString isEqualToString:@""]) {
+            [photosUser removeObjectAtIndex:0];
+        }
+        
         self.swipeView.avatarImageView.layer.cornerRadius = 110;
         
         self.swipeView.parameterUser = parametersUser;
+    
         self.swipeView.photos = photosUser;
         
-        self.counter++;
+        self.counterIndexPath++;
         
-        if (self.counter == max) {
+        if (self.counterIndexPath == max) {
             
 //            [UIView animateWithDuration:0.35
 //                                  delay:0.0
@@ -148,7 +154,7 @@
 //                                 
 //                             }];
             
-            self.counter = 0;
+            self.counterIndexPath = 0;
         }
         
     } else {

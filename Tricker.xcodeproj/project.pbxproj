@@ -12,6 +12,7 @@
 		FD0C1CA01DE783B500D37B61 /* TSSwipeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD0C1C9F1DE783B500D37B61 /* TSSwipeView.xib */; };
 		FD0C1CA31DE78B9B00D37B61 /* TSSwipeView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0C1CA21DE78B9B00D37B61 /* TSSwipeView.m */; };
 		FD0C1CA61DE7930100D37B61 /* TSMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0C1CA51DE7930100D37B61 /* TSMapViewController.m */; };
+		FD0E42831DF7051200399621 /* TSChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD0E42821DF7051200399621 /* TSChatViewController.m */; };
 		FD1C4F331DCE252200CF63E9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1C4F321DCE252200CF63E9 /* main.m */; };
 		FD1C4F361DCE252200CF63E9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1C4F351DCE252200CF63E9 /* AppDelegate.m */; };
 		FD1C4F3C1DCE252200CF63E9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD1C4F3A1DCE252200CF63E9 /* Main.storyboard */; };
@@ -81,6 +82,8 @@
 		FD0C1CA21DE78B9B00D37B61 /* TSSwipeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSSwipeView.m; sourceTree = "<group>"; };
 		FD0C1CA41DE7930100D37B61 /* TSMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSMapViewController.h; sourceTree = "<group>"; };
 		FD0C1CA51DE7930100D37B61 /* TSMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSMapViewController.m; sourceTree = "<group>"; };
+		FD0E42811DF7051200399621 /* TSChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSChatViewController.h; sourceTree = "<group>"; };
+		FD0E42821DF7051200399621 /* TSChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSChatViewController.m; sourceTree = "<group>"; };
 		FD1C4F2E1DCE252200CF63E9 /* Tricker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tricker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD1C4F321DCE252200CF63E9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FD1C4F341DCE252200CF63E9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -216,6 +219,8 @@
 				FDE9273B1DE8EC4600FF884F /* TSIntermediateViewController.m */,
 				FD0C1C9B1DE7810000D37B61 /* TSCardsViewController.h */,
 				FD0C1C9C1DE7810000D37B61 /* TSCardsViewController.m */,
+				FD0E42811DF7051200399621 /* TSChatViewController.h */,
+				FD0E42821DF7051200399621 /* TSChatViewController.m */,
 				FDBDDDDD1DDB8745008EE73E /* TSSettingsTableViewController.h */,
 				FDBDDDDE1DDB8745008EE73E /* TSSettingsTableViewController.m */,
 			);
@@ -492,6 +497,7 @@
 				en,
 				Base,
 				ru,
+				he,
 			);
 			mainGroup = FD1C4F251DCE252200CF63E9;
 			productRefGroup = FD1C4F2F1DCE252200CF63E9 /* Products */;
@@ -617,6 +623,7 @@
 				FDF4BB1D1DF02DB1003D3841 /* TSPhotoView.m in Sources */,
 				FD0C1CA61DE7930100D37B61 /* TSMapViewController.m in Sources */,
 				FDFDFC981DD293E0007811EF /* TSProfileTableViewController.m in Sources */,
+				FD0E42831DF7051200399621 /* TSChatViewController.m in Sources */,
 				FD1C4F691DCE282100CF63E9 /* TSSocialNetworkLoginViewController.m in Sources */,
 				FDF4BB201DF03F38003D3841 /* TSPhotosViewController.m in Sources */,
 				FDBDDDDF1DDB8745008EE73E /* TSSettingsTableViewController.m in Sources */,

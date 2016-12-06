@@ -30,7 +30,7 @@
         FIRDataSnapshot *fireUserParameters = [snapshot childSnapshotForPath:keyToParameters];
         FIRDataSnapshot *fireUserPhotos = [snapshot childSnapshotForPath:keyToPhotos];
         
-        FIRDataSnapshot *userIdent = fireUser.value[@"userID"];
+        FIRDataSnapshot *userIdent = fireUser.value[@"userID"]; 
         FIRDataSnapshot *userName = fireUser.value[@"displayName"];
         FIRDataSnapshot *userEmail = fireUser.value[@"email"];
         FIRDataSnapshot *userPhoto = fireUser.value[@"photoURL"];
